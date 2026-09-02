@@ -5,6 +5,7 @@ const fs = require('fs');
 
 const stateService = require('../services/stateService');
 const quizService = require('../services/quizService');
+const { startLimiter, submitLimiter, liveLimiter } = require('../middleware/rateLimiters');
 
 // Tải danh sách đơn vị công tác
 let organizationsList = [];
@@ -44,9 +45,9 @@ router.get('/status', async (req, res, next) => {
 
 /**
  * POST /api/start
- * Đăng ký và bắt đầu lượt thi mới
+ * Đăng ký và bắt đầu lượt thi mới (Rate limited: 15 req/phút/IP)
  */
-router.post('/start', async (req, res, next) => {
+router.post('/start', startLimiter, async (req, res, next) => {
   try {
     const { fullName, organization } = req.body || {};
     const clientFingerprint = req.headers['user-agent'] || null;
@@ -78,9 +79,9 @@ router.get('/attempt/:id', async (req, res, next) => {
 
 /**
  * POST /api/submit
- * Nộp bài thi
+ * Nộp bài thi (Rate limited: 10 req/phút/IP)
  */
-router.post('/submit', async (req, res, next) => {
+router.post('/submit', submitLimiter, async (req, res, next) => {
   try {
     const { attemptId, answers } = req.body || {};
     const result = await quizService.submitAttempt(attemptId, answers);
@@ -105,9 +106,9 @@ router.get('/result/:id', async (req, res, next) => {
 
 /**
  * GET /api/live
- * Dữ liệu phục vụ màn hình trình chiếu trực tiếp hội trường 16:9
+ * Dữ liệu phục vụ màn hình trình chiếu trực tiếp hội trường 16:9 (Rate limited: 120 req/phút/IP)
  */
-router.get('/live', async (req, res, next) => {
+router.get('/live', liveLimiter, async (req, res, next) => {
   try {
     const liveData = await quizService.getLiveDashboard();
     res.json(liveData);

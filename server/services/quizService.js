@@ -1,6 +1,26 @@
+const path = require('path');
+const fs = require('fs');
 const db = require('../db');
 const questionService = require('./questionService');
 const stateService = require('./stateService');
+
+// Tải danh sách đơn vị công tác chuẩn
+let validOrganizations = [];
+try {
+  const orgPath = path.join(__dirname, '../data/organizations.json');
+  if (fs.existsSync(orgPath)) {
+    validOrganizations = JSON.parse(fs.readFileSync(orgPath, 'utf8'));
+  }
+} catch (e) {
+  console.error('[QuizService] Lỗi đọc organizations.json:', e.message);
+}
+
+// Regex kiểm tra UUID hợp lệ (chuẩn 8-4-4-4-12 hex)
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function isValidUUID(id) {
+  return typeof id === 'string' && UUID_REGEX.test(id);
+}
 
 /**
  * Bắt đầu một lượt thi mới
@@ -23,8 +43,22 @@ async function startAttempt({ fullName, organization, clientFingerprint = null }
     throw err;
   }
 
+  // Chống XSS / HTML Injection trong Họ và tên
+  if (/[<>]|script|javascript:/i.test(cleanName)) {
+    const err = new Error('Họ và tên chứa ký tự không hợp lệ');
+    err.status = 400;
+    throw err;
+  }
+
   if (!cleanOrg || cleanOrg.length < 2 || cleanOrg.length > 150) {
     const err = new Error('Đơn vị công tác không hợp lệ (từ 2 đến 150 ký tự)');
+    err.status = 400;
+    throw err;
+  }
+
+  // Xác thực đơn vị công tác phải nằm trong danh mục chính thức nếu danh mục có sẵn
+  if (validOrganizations.length > 0 && !validOrganizations.includes(cleanOrg)) {
+    const err = new Error('Đơn vị công tác không nằm trong danh mục hợp lệ của phường Tùng Thiện');
     err.status = 400;
     throw err;
   }
@@ -53,8 +87,8 @@ async function startAttempt({ fullName, organization, clientFingerprint = null }
  * Lấy thông tin lượt thi để khôi phục (Resume) khi F5/refresh
  */
 async function getAttempt(attemptId) {
-  if (!attemptId) {
-    const err = new Error('Thiếu mã lượt thi (attemptId)');
+  if (!attemptId || !isValidUUID(attemptId)) {
+    const err = new Error('Mã lượt thi không hợp lệ (yêu cầu định dạng UUID)');
     err.status = 400;
     throw err;
   }
@@ -102,9 +136,9 @@ async function getAttempt(attemptId) {
 /**
  * Nộp bài thi - Chống Race Condition & Chống Submit kép bằng DB Transaction + FOR UPDATE
  */
-async function submitAttempt(attemptId, answers = []) {
-  if (!attemptId) {
-    const err = new Error('Thiếu mã lượt thi (attemptId)');
+async function submitAttempt(attemptId, answers = {}) {
+  if (!attemptId || !isValidUUID(attemptId)) {
+    const err = new Error('Mã lượt thi không hợp lệ (yêu cầu định dạng UUID)');
     err.status = 400;
     throw err;
   }
@@ -188,8 +222,8 @@ async function submitAttempt(attemptId, answers = []) {
  * Tra cứu kết quả cá nhân và thứ hạng
  */
 async function getAttemptResult(attemptId) {
-  if (!attemptId) {
-    const err = new Error('Thiếu mã lượt thi (attemptId)');
+  if (!attemptId || !isValidUUID(attemptId)) {
+    const err = new Error('Mã lượt thi không hợp lệ (yêu cầu định dạng UUID)');
     err.status = 400;
     throw err;
   }

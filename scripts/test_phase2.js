@@ -108,7 +108,7 @@ async function runTests() {
       method: 'POST',
       body: {
         fullName: 'Nguyễn Văn Kiểm Thử',
-        organization: 'Đoàn Thanh niên phường'
+        organization: 'Đoàn Thanh niên Cộng sản Hồ Chí Minh phường'
       }
     });
     assert.strictEqual(res.status, 201);
@@ -196,7 +196,7 @@ async function runTests() {
       method: 'POST',
       body: {
         fullName: 'Thí Sinh Race Condition',
-        organization: 'Công an phường'
+        organization: 'Công an phường Tùng Thiện'
       }
     });
     assert.strictEqual(startRes.status, 201);

@@ -8,6 +8,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const isProd = process.env.NODE_ENV === 'production';
 
+// Disable x-powered-by header
+app.disable('x-powered-by');
+
 // Security middleware
 app.use(
   helmet({
@@ -77,14 +80,19 @@ app.all('/api/*', (req, res) => {
   });
 });
 
-// Global error handler - never leaks stack trace in production
+// Global error handler - never leaks database internals or stack trace
 app.use((err, req, res, next) => {
-  console.error('[Unhandled Error]', err);
+  console.error(`[Error] ${req.method} ${req.originalUrl}:`, err.message);
   if (res.headersSent) {
     return next(err);
   }
-  res.status(err.status || 500).json({
-    error: isProd ? 'Internal Server Error' : (err.message || 'Lỗi hệ thống')
+  const statusCode = err.statusCode || err.status || 500;
+  const safeMessage = statusCode < 500
+    ? err.message
+    : 'Đã xảy ra lỗi trên hệ thống, vui lòng thử lại sau.';
+
+  res.status(statusCode).json({
+    error: safeMessage
   });
 });
 
@@ -100,5 +108,33 @@ if (require.main === module) {
     console.log(`====================================================`);
   });
 }
+
+// Graceful shutdown handling
+function gracefulShutdown(signal) {
+  console.log(`\n[Graceful Shutdown] Nhận tín hiệu ${signal}. Đang đóng ứng dụng an toàn...`);
+  if (server) {
+    server.close(async () => {
+      console.log('[Graceful Shutdown] HTTP server đã dừng nhận kết nối mới.');
+      try {
+        const db = require('./db');
+        await db.pool.end();
+        console.log('[Graceful Shutdown] PostgreSQL connection pool đã đóng.');
+      } catch (dbErr) {
+        console.error('[Graceful Shutdown] Lỗi đóng DB pool:', dbErr.message);
+      }
+      process.exit(0);
+    });
+
+    setTimeout(() => {
+      console.error('[Graceful Shutdown] Quá thời gian chờ (10s), buộc dừng tiến trình.');
+      process.exit(1);
+    }, 10000).unref();
+  } else {
+    process.exit(0);
+  }
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 module.exports = { app, server };

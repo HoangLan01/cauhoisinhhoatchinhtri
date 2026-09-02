@@ -52,20 +52,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const qrDomainText = document.getElementById('qr-domain-text');
     if (!qrContainer) return;
 
-    // Ưu tiên domain production cau-hoi.phuongtungthien.vn
-    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const targetUrl = isLocal ? window.location.origin : 'https://cau-hoi.phuongtungthien.vn';
+    // Luôn mã hóa đường link chính thức https://cau-hoi.phuongtungthien.vn để điện thoại quét qua 4G/Wifi vào thi được ngay
+    const targetUrl = 'https://cau-hoi.phuongtungthien.vn';
 
     if (qrDomainText) {
       qrDomainText.textContent = targetUrl;
     }
 
     if (window.QRCode) {
+      qrContainer.innerHTML = '';
       qrCodeInstance = new window.QRCode(qrContainer, {
         text: targetUrl,
-        width: 220,
-        height: 220,
-        colorDark: '#991b1b',
+        width: 240,
+        height: 240,
+        colorDark: '#0f172a', // Màu tương phản cao, camera điện thoại và Zalo quét tức thì
         colorLight: '#ffffff'
       });
     }

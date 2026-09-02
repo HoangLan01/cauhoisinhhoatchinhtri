@@ -28,6 +28,17 @@
   <!-- Main Content -->
   <main class="main-content">
     <div class="container quiz-container">
+
+      <!-- Candidate Info Strip -->
+      <div class="quiz-candidate-strip">
+        <div>
+          Thí sinh: <span class="candidate-name-badge" id="candidate-name">Đang tải...</span>
+        </div>
+        <div style="font-size: var(--font-xs);" id="candidate-org">
+          Đơn vị: ...
+        </div>
+      </div>
+
       <!-- Quiz Topbar -->
       <div class="quiz-topbar">
         <div class="quiz-timer">
@@ -36,7 +47,7 @@
           </svg>
           <span id="quiz-timer-display">00:00</span>
         </div>
-        <div class="quiz-progress-label">
+        <div class="quiz-progress-label" id="quiz-progress-text">
           Tiến độ: <span id="current-question-index">1</span> / <span id="total-questions">20</span> câu
         </div>
       </div>
@@ -44,6 +55,20 @@
       <!-- Progress Bar -->
       <div class="progress-bar-container">
         <div class="progress-bar-fill" id="quiz-progress-fill" style="width: 5%;"></div>
+      </div>
+
+      <!-- Question Grid Navigator -->
+      <div class="question-nav-section">
+        <div class="question-nav-header">
+          <span>Danh sách câu hỏi</span>
+          <div class="nav-legend">
+            <span class="legend-item"><span class="legend-dot answered"></span> Đã chọn</span>
+            <span class="legend-item"><span class="legend-dot unanswered"></span> Chưa chọn</span>
+          </div>
+        </div>
+        <div class="question-grid" id="question-grid-container">
+          <!-- 20 ô câu hỏi sẽ được sinh bằng JavaScript -->
+        </div>
       </div>
 
       <!-- Question Card -->
@@ -54,33 +79,18 @@
         </div>
 
         <h2 class="question-text" id="question-title">
-          Chỉ thị số 05-CT/TW của Bộ Chính trị khóa XII ban hành về nội dung gì?
+          Đang nạp nội dung câu hỏi...
         </h2>
 
         <div class="options-grid" id="options-container">
-          <div class="option-item" data-id="A">
-            <div class="option-key">A</div>
-            <div class="option-content">Đẩy mạnh học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh</div>
-          </div>
-          <div class="option-item" data-id="B">
-            <div class="option-key">B</div>
-            <div class="option-content">Đổi mới căn bản, toàn diện giáo dục và đào tạo</div>
-          </div>
-          <div class="option-item" data-id="C">
-            <div class="option-key">C</div>
-            <div class="option-content">Tăng cường xây dựng, chỉnh đốn Đảng trong tình hình mới</div>
-          </div>
-          <div class="option-item" data-id="D">
-            <div class="option-key">D</div>
-            <div class="option-content">Chủ động ứng phó với biến đổi khí hậu và quản lý tài nguyên</div>
-          </div>
+          <!-- Các phương án A/B/C/D sẽ được sinh bằng JavaScript -->
         </div>
 
         <div class="quiz-actions">
           <button type="button" class="btn btn-secondary" id="btn-prev" disabled>
             &larr; Câu trước
           </button>
-          <div style="display: flex; gap: var(--space-3);">
+          <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
             <button type="button" class="btn btn-secondary" id="btn-next">
               Câu tiếp theo &rarr;
             </button>
@@ -92,6 +102,34 @@
       </div>
     </div>
   </main>
+
+  <!-- Submit Confirmation Modal -->
+  <div class="modal-overlay" id="submit-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Xác nhận nộp bài thi</h3>
+      </div>
+      <div class="modal-body" id="modal-body-content">
+        <p style="margin-bottom: var(--space-3);">
+          Đồng chí đã hoàn thành <strong id="modal-answered-count" style="color: var(--primary);">0</strong>/<strong id="modal-total-count">20</strong> câu hỏi.
+        </p>
+        <div id="modal-warning-box" class="alert alert-warning" style="display: none; margin-bottom: 0;">
+          <strong>Cảnh báo:</strong> Đồng chí vẫn còn <strong id="modal-unanswered-count">0</strong> câu chưa trả lời. Bạn có chắc chắn muốn nộp bài ngay bây giờ không?
+        </div>
+        <div id="modal-success-box" class="alert alert-info" style="display: none; margin-bottom: 0;">
+          Đồng chí đã hoàn thành đầy đủ tất cả các câu hỏi. Bấm <strong>"Xác nhận nộp bài"</strong> để hệ thống chấm điểm và ghi nhận thời gian.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-modal-cancel">
+          Làm tiếp
+        </button>
+        <button type="button" class="btn btn-primary" id="btn-modal-confirm">
+          Xác nhận nộp bài
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="site-footer">

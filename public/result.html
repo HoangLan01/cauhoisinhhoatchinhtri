@@ -27,56 +27,77 @@
 
   <!-- Main Content -->
   <main class="main-content">
-    <div class="container" style="max-width: 600px;">
+    <div class="container" style="max-width: 640px;">
       <div class="card" style="text-align: center;">
-        <div style="width: 68px; height: 68px; background: var(--success-light); border: 2px solid #bbf7d0; border-radius: var(--radius-full); display: inline-flex; align-items: center; justify-content: center; margin-bottom: var(--space-4);">
-          <svg style="width: 36px; height: 36px; stroke: var(--success);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+
+        <!-- Success Tick Icon -->
+        <div style="width: 72px; height: 72px; background: var(--success-light); border: 2px solid #bbf7d0; border-radius: var(--radius-full); display: inline-flex; align-items: center; justify-content: center; margin-bottom: var(--space-4); box-shadow: var(--shadow-sm);">
+          <svg style="width: 38px; height: 38px; stroke: var(--success);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
           </svg>
         </div>
 
-        <h2 class="card-title" style="font-size: var(--font-2xl);">Nộp bài thành công!</h2>
+        <h2 class="card-title" style="font-size: var(--font-2xl);">Nộp bài thi thành công!</h2>
         <p class="card-subtitle" style="margin-bottom: var(--space-6);">
-          Cảm ơn đồng chí đã hoàn thành phần thi sinh hoạt chính trị.
+          Cảm ơn đồng chí đã hoàn thành bài thi trắc nghiệm sinh hoạt chính trị.
         </p>
 
         <!-- User Information Review -->
-        <div style="background-color: var(--bg-subtle); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-6); text-align: left;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+        <div style="background-color: var(--bg-subtle); border-radius: var(--radius-md); padding: var(--space-4) var(--space-5); margin-bottom: var(--space-6); text-align: left; border: 1px solid var(--border-color);">
+          <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2); flex-wrap: wrap;">
             <span style="color: var(--text-muted); font-size: var(--font-sm);">Họ và tên thí sinh:</span>
-            <strong id="user-fullname" style="color: var(--text-main);">Nguyễn Văn An</strong>
+            <strong id="user-fullname" style="color: var(--text-main); font-size: var(--font-base);">Đang tải...</strong>
           </div>
-          <div style="display: flex; justify-content: space-between;">
+          <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
             <span style="color: var(--text-muted); font-size: var(--font-sm);">Đơn vị công tác:</span>
-            <strong id="user-org" style="color: var(--text-main);">Chi bộ Tổ dân phố 3</strong>
+            <strong id="user-org" style="color: var(--text-main); font-size: var(--font-base);">Đang tải...</strong>
           </div>
         </div>
 
-        <!-- Score & Time Metric -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-6);">
+        <!-- 4-Grid Metrics -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); margin-bottom: var(--space-6);">
+          <!-- Score -->
           <div style="background: #fff; border: 2px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-4);">
             <div style="font-size: var(--font-xs); font-weight: 700; text-transform: uppercase; color: var(--text-subtle); margin-bottom: var(--space-1);">Điểm số</div>
             <div style="font-size: 2.25rem; font-weight: 800; color: var(--primary);">
-              <span id="score-val">19</span><span style="font-size: var(--font-lg); color: var(--text-muted);">/20</span>
+              <span id="score-val">--</span><span style="font-size: var(--font-lg); color: var(--text-muted);">/<span id="total-val">20</span></span>
             </div>
           </div>
+
+          <!-- Duration -->
           <div style="background: #fff; border: 2px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-4);">
             <div style="font-size: var(--font-xs); font-weight: 700; text-transform: uppercase; color: var(--text-subtle); margin-bottom: var(--space-1);">Thời gian làm bài</div>
-            <div style="font-size: 2.25rem; font-weight: 800; color: var(--accent-hover);">
-              <span id="time-val">04:12</span>
+            <div style="font-size: 1.75rem; font-weight: 800; color: var(--accent-hover); line-height: 1.3; padding-top: 4px;">
+              <span id="time-val">--:--</span>
+            </div>
+          </div>
+
+          <!-- Rank -->
+          <div style="background: #fff; border: 2px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-4);">
+            <div style="font-size: var(--font-xs); font-weight: 700; text-transform: uppercase; color: var(--text-subtle); margin-bottom: var(--space-1);">Thứ hạng hiện tại</div>
+            <div style="font-size: 2.25rem; font-weight: 800; color: var(--info);">
+              #<span id="rank-val">--</span>
+            </div>
+          </div>
+
+          <!-- Total Completed -->
+          <div style="background: #fff; border: 2px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-4);">
+            <div style="font-size: var(--font-xs); font-weight: 700; text-transform: uppercase; color: var(--text-subtle); margin-bottom: var(--space-1);">Số người đã hoàn thành</div>
+            <div style="font-size: 2.25rem; font-weight: 800; color: var(--text-main);">
+              <span id="completed-count-val">--</span>
             </div>
           </div>
         </div>
 
-        <div class="alert alert-info" style="text-align: left;">
-          Kết quả chính thức của toàn hội thi sẽ được công bố trên màn hình trực tiếp tại hội trường khi kết thúc thời gian thi.
+        <div class="alert alert-info" style="text-align: left; font-size: 0.85rem; line-height: 1.5;">
+          <strong>Lưu ý:</strong> Thứ hạng cá nhân có thể thay đổi liên tục theo tiến độ nộp bài của toàn hội thi. Kết quả chính thức sẽ được Ban Tổ chức công bố trên màn hình trực tiếp tại hội trường khi kết thúc thời gian thi.
         </div>
 
-        <div style="display: flex; gap: var(--space-3); justify-content: center; margin-top: var(--space-6);">
-          <a href="/live.html" class="btn btn-primary">
-            Xem màn hình trực tiếp &rarr;
+        <div style="display: flex; gap: var(--space-3); justify-content: center; margin-top: var(--space-6); flex-wrap: wrap;">
+          <a href="/live.html" class="btn btn-primary btn-lg">
+            Xem màn hình trực tiếp hội trường &rarr;
           </a>
-          <a href="/" class="btn btn-secondary">
+          <a href="/" class="btn btn-secondary btn-lg">
             Về trang chủ
           </a>
         </div>

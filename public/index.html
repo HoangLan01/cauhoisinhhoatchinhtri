@@ -29,17 +29,37 @@
   <!-- Main Content -->
   <main class="main-content">
     <div class="container" style="max-width: var(--form-max-w);">
+
+      <!-- Resume Active Attempt Banner (ẩn mặc định, hiện nếu có bài đang thi dở) -->
+      <div id="resume-banner" class="alert alert-info" style="display: none; margin-bottom: var(--space-4);">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap;">
+          <div>
+            <strong>Thông báo:</strong> Bạn đang có một bài thi chưa hoàn thành!
+          </div>
+          <a href="/quiz.html" class="btn btn-primary btn-sm" id="btn-resume-quiz" style="padding: 0.4rem 1rem; font-size: var(--font-sm);">
+            Tiếp tục làm bài &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- State Announcement Banner (hiển thị khi trạng thái không phải RUNNING) -->
+      <div id="state-alert" class="alert alert-warning" style="display: none; margin-bottom: var(--space-4);">
+        <span id="state-alert-text">Cuộc thi hiện chưa mở nhận bài thi.</span>
+      </div>
+
       <div class="card">
         <div class="card-header">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span class="badge badge-primary">Sinh hoạt chính trị 2025</span>
-            <span class="badge badge-success">Đang mở</span>
+            <span class="badge badge-primary">Chuyên đề công nghệ & Cải cách</span>
+            <span class="badge badge-success" id="badge-system-state">ĐANG MỞ</span>
           </div>
-          <h2 class="card-title" style="margin-top: var(--space-3);">Thông tin người dự thi</h2>
-          <p class="card-subtitle">Vui lòng điền chính xác thông tin để ghi nhận kết quả và xếp hạng.</p>
+          <h2 class="card-title" style="margin-top: var(--space-3);" id="quiz-title-display">
+            Thông tin người dự thi
+          </h2>
+          <p class="card-subtitle">Vui lòng điền chính xác thông tin để hệ thống ghi nhận kết quả và xếp hạng.</p>
         </div>
 
-        <form id="registration-form">
+        <form id="registration-form" novalidate>
           <div class="form-group">
             <label class="form-label" for="fullname">
               Họ và tên thí sinh <span class="required">*</span>
@@ -50,31 +70,29 @@
               name="fullname"
               class="form-input"
               placeholder="Ví dụ: Nguyễn Văn An"
-              required
               autocomplete="name"
+              required
             >
+            <div class="field-error" id="fullname-error" style="display: none;"></div>
           </div>
 
           <div class="form-group">
             <label class="form-label" for="organization">
               Đơn vị công tác / Chi bộ / Tổ dân phố <span class="required">*</span>
             </label>
-            <input
-              type="text"
-              id="organization"
-              name="organization"
-              class="form-input"
-              placeholder="Ví dụ: Chi bộ Tổ dân phố 3"
-              required
-            >
+            <select id="organization" name="organization" class="form-select" required>
+              <option value="">-- Đang tải danh sách đơn vị... --</option>
+            </select>
+            <div class="field-error" id="organization-error" style="display: none;"></div>
           </div>
 
           <div class="alert alert-info">
-            <strong>Thể lệ dự thi:</strong>
-            <ul style="padding-left: 1.25rem; margin-top: 0.5rem; font-size: 0.875rem;">
-              <li>Bài thi gồm khoảng 20 câu hỏi trắc nghiệm A/B/C/D.</li>
-              <li>Mỗi người chỉ được nộp bài một lần duy nhất.</li>
-              <li>Thứ hạng được tính theo Điểm số cao nhất và Thời gian hoàn thành nhanh nhất.</li>
+            <strong>Thể lệ và quy chế:</strong>
+            <ul style="padding-left: 1.25rem; margin-top: 0.5rem; font-size: 0.875rem; line-height: 1.5;">
+              <li>Bài thi gồm <strong>20 câu hỏi trắc nghiệm</strong> A/B/C/D.</li>
+              <li>Mỗi thí sinh nộp bài <strong>một lần duy nhất</strong>.</li>
+              <li>Điểm số và thời gian làm bài được tính toán trực tiếp trên hệ thống máy chủ.</li>
+              <li>Thứ hạng ưu tiên: <strong>1. Điểm cao nhất &rarr; 2. Thời gian nhanh nhất</strong>.</li>
             </ul>
           </div>
 

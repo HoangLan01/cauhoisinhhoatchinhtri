@@ -1,4 +1,11 @@
 const rateLimit = require('express-rate-limit');
+require('dotenv').config();
+
+const LOAD_TEST_SECRET = process.env.LOAD_TEST_SECRET || 'LOAD_TEST_SECRET_2025';
+
+function skipIfLoadTest(req) {
+  return req.headers['x-load-test-token'] === LOAD_TEST_SECRET;
+}
 
 /**
  * Rate limiter cho API bắt đầu làm bài thi (/api/start)
@@ -9,6 +16,7 @@ const startLimiter = rateLimit({
   max: 15,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: skipIfLoadTest,
   message: {
     error: 'Bạn đang thao tác quá nhanh. Vui lòng chờ 1 phút trước khi bắt đầu lại.',
     code: 'RATE_LIMIT_START'
@@ -24,6 +32,7 @@ const submitLimiter = rateLimit({
   max: 10,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: skipIfLoadTest,
   message: {
     error: 'Bạn đang gửi yêu cầu nộp bài quá nhanh. Vui lòng đợi trong giây lát.',
     code: 'RATE_LIMIT_SUBMIT'
@@ -39,6 +48,7 @@ const liveLimiter = rateLimit({
   max: 120,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: skipIfLoadTest,
   message: {
     error: 'Lượng truy vấn màn hình trực tiếp vượt quá mức cho phép.',
     code: 'RATE_LIMIT_LIVE'
@@ -48,5 +58,6 @@ const liveLimiter = rateLimit({
 module.exports = {
   startLimiter,
   submitLimiter,
-  liveLimiter
+  liveLimiter,
+  LOAD_TEST_SECRET
 };

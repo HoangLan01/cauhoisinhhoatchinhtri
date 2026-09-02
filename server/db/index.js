@@ -5,7 +5,7 @@ const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:abc@
 
 const pool = new Pool({
   connectionString,
-  max: 20, // Hỗ trợ kết nối đồng thời
+  max: parseInt(process.env.DB_POOL_MAX || '25', 10), // Hỗ trợ 25 kết nối đồng thời phục vụ tải cao
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000
 });

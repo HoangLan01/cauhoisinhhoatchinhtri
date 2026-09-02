@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kết quả bài thi — Hội thi Phường Tùng Thiện</title>
+  <meta name="description" content="Kết quả cá nhân bài thi trắc nghiệm trực tuyến Phường Tùng Thiện">
+  <link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="brand-wrapper">
+        <div class="brand-logo-badge">★</div>
+        <div class="brand-text">
+          <p>ĐẢNG BỘ - HĐND - UBND PHƯỜNG TÙNG THIỆN</p>
+          <h1>KẾT QUẢ BÀI THI TRỰC TUYẾN</h1>
+        </div>
+      </a>
+      <nav class="header-nav">
+        <a href="/" class="nav-link">Trang chủ</a>
+        <a href="/live.html" class="nav-link">Màn hình Live</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container" style="max-width: 600px;">
+      <div class="card" style="text-align: center;">
+        <div style="width: 68px; height: 68px; background: var(--success-light); border: 2px solid #bbf7d0; border-radius: var(--radius-full); display: inline-flex; align-items: center; justify-content: center; margin-bottom: var(--space-4);">
+          <svg style="width: 36px; height: 36px; stroke: var(--success);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+
+        <h2 class="card-title" style="font-size: var(--font-2xl);">Nộp bài thành công!</h2>
+        <p class="card-subtitle" style="margin-bottom: var(--space-6);">
+          Cảm ơn đồng chí đã hoàn thành phần thi sinh hoạt chính trị.
+        </p>
+
+        <!-- User Information Review -->
+        <div style="background-color: var(--bg-subtle); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-6); text-align: left;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
+            <span style="color: var(--text-muted); font-size: var(--font-sm);">Họ và tên thí sinh:</span>
+            <strong id="user-fullname" style="color: var(--text-main);">Nguyễn Văn An</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted); font-size: var(--font-sm);">Đơn vị công tác:</span>
+            <strong id="user-org" style="color: var(--text-main);">Chi bộ Tổ dân phố 3</strong>
+          </div>
+        </div>
+
+        <!-- Score & Time Metric -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-6);">
+          <div style="background: #fff; border: 2px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-4);">
+            <div style="font-size: var(--font-xs); font-weight: 700; text-transform: uppercase; color: var(--text-subtle); margin-bottom: var(--space-1);">Điểm số</div>
+            <div style="font-size: 2.25rem; font-weight: 800; color: var(--primary);">
+              <span id="score-val">19</span><span style="font-size: var(--font-lg); color: var(--text-muted);">/20</span>
+            </div>
+          </div>
+          <div style="background: #fff; border: 2px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--space-4);">
+            <div style="font-size: var(--font-xs); font-weight: 700; text-transform: uppercase; color: var(--text-subtle); margin-bottom: var(--space-1);">Thời gian làm bài</div>
+            <div style="font-size: 2.25rem; font-weight: 800; color: var(--accent-hover);">
+              <span id="time-val">04:12</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-info" style="text-align: left;">
+          Kết quả chính thức của toàn hội thi sẽ được công bố trên màn hình trực tiếp tại hội trường khi kết thúc thời gian thi.
+        </div>
+
+        <div style="display: flex; gap: var(--space-3); justify-content: center; margin-top: var(--space-6);">
+          <a href="/live.html" class="btn btn-primary">
+            Xem màn hình trực tiếp &rarr;
+          </a>
+          <a href="/" class="btn btn-secondary">
+            Về trang chủ
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>Ủy ban nhân dân phường Tùng Thiện</strong> — Chúc mừng đồng chí đã hoàn thành bài thi</p>
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/result.js"></script>
+</body>
+</html>

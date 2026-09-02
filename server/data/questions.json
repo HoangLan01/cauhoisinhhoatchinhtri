@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "question": "Chỉ thị số 05-CT/TW của Bộ Chính trị khóa XII ban hành về nội dung gì?",
+    "options": [
+      { "id": "A", "text": "Đẩy mạnh học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh" },
+      { "id": "B", "text": "Đổi mới căn bản, toàn diện giáo dục và đào tạo" },
+      { "id": "C", "text": "Tăng cường xây dựng, chỉnh đốn Đảng" },
+      { "id": "D", "text": "Chủ động ứng phó với biến đổi khí hậu" }
+    ],
+    "correct": "A",
+    "explanation": "Chỉ thị 05-CT/TW ban hành ngày 15/5/2016 về đẩy mạnh học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh."
+  },
+  {
+    "id": 2,
+    "question": "Mục tiêu tổng quát phát triển kinh tế - xã hội thị xã Sơn Tây / Phường Tùng Thiện hướng tới là gì?",
+    "options": [
+      { "id": "A", "text": "Đô thị văn minh, hiện đại, giàu bản sắc văn hóa lịch sử" },
+      { "id": "B", "text": "Khu công nghiệp nặng trọng điểm phía Tây" },
+      { "id": "C", "text": "Trung tâm khai khoáng và chế xuất vùng" },
+      { "id": "D", "text": "Đô thị công nghệ thông tin tập trung đơn thuần" }
+    ],
+    "correct": "A",
+    "explanation": "Định hướng phát triển gắn với bảo tồn văn hóa, lịch sử và xây dựng nếp sống văn minh đô thị."
+  }
+]

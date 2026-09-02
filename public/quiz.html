@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Làm bài thi — Hội thi Trắc nghiệm Phường Tùng Thiện</title>
+  <meta name="description" content="Giao diện làm bài trắc nghiệm sinh hoạt chính trị UBND Phường Tùng Thiện">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/quiz.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="brand-wrapper">
+        <div class="brand-logo-badge">★</div>
+        <div class="brand-text">
+          <p>ĐẢNG BỘ - HĐND - UBND PHƯỜNG TÙNG THIỆN</p>
+          <h1>BÀI THI TRẮC NGHIỆM TRỰC TUYẾN</h1>
+        </div>
+      </a>
+      <div class="badge badge-warning" style="background: rgba(255,255,255,0.2); color: #fff; border-color: rgba(255,255,255,0.3);">
+        Đang làm bài
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container quiz-container">
+      <!-- Quiz Topbar -->
+      <div class="quiz-topbar">
+        <div class="quiz-timer">
+          <svg class="timer-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span id="quiz-timer-display">00:00</span>
+        </div>
+        <div class="quiz-progress-label">
+          Tiến độ: <span id="current-question-index">1</span> / <span id="total-questions">20</span> câu
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="quiz-progress-fill" style="width: 5%;"></div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="card question-card">
+        <div class="question-meta">
+          <span class="badge badge-primary" id="question-badge">Câu hỏi số 1</span>
+          <span style="font-size: var(--font-xs); color: var(--text-subtle);">Chọn 01 đáp án đúng nhất</span>
+        </div>
+
+        <h2 class="question-text" id="question-title">
+          Chỉ thị số 05-CT/TW của Bộ Chính trị khóa XII ban hành về nội dung gì?
+        </h2>
+
+        <div class="options-grid" id="options-container">
+          <div class="option-item" data-id="A">
+            <div class="option-key">A</div>
+            <div class="option-content">Đẩy mạnh học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh</div>
+          </div>
+          <div class="option-item" data-id="B">
+            <div class="option-key">B</div>
+            <div class="option-content">Đổi mới căn bản, toàn diện giáo dục và đào tạo</div>
+          </div>
+          <div class="option-item" data-id="C">
+            <div class="option-key">C</div>
+            <div class="option-content">Tăng cường xây dựng, chỉnh đốn Đảng trong tình hình mới</div>
+          </div>
+          <div class="option-item" data-id="D">
+            <div class="option-key">D</div>
+            <div class="option-content">Chủ động ứng phó với biến đổi khí hậu và quản lý tài nguyên</div>
+          </div>
+        </div>
+
+        <div class="quiz-actions">
+          <button type="button" class="btn btn-secondary" id="btn-prev" disabled>
+            &larr; Câu trước
+          </button>
+          <div style="display: flex; gap: var(--space-3);">
+            <button type="button" class="btn btn-secondary" id="btn-next">
+              Câu tiếp theo &rarr;
+            </button>
+            <button type="button" class="btn btn-primary" id="btn-submit-quiz">
+              Nộp bài thi
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>Ủy ban nhân dân phường Tùng Thiện</strong> — Hệ thống tính điểm và thời gian tự động trên máy chủ</p>
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/quiz.js"></script>
+</body>
+</html>

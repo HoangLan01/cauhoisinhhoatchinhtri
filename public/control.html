@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Điều khiển cuộc thi — Ban Tổ chức Phường Tùng Thiện</title>
+  <meta name="description" content="Trang điều khiển trạng thái cuộc thi và xuất báo cáo kết quả">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/control.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="brand-wrapper">
+        <div class="brand-logo-badge">★</div>
+        <div class="brand-text">
+          <p>ĐẢNG BỘ - HĐND - UBND PHƯỜNG TÙNG THIỆN</p>
+          <h1>BẢNG ĐIỀU KHIỂN BAN TỔ CHỨC</h1>
+        </div>
+      </a>
+      <nav class="header-nav">
+        <a href="/" class="nav-link">Trang chủ</a>
+        <a href="/live.html" class="nav-link">Màn hình Live</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container control-container">
+      <!-- Status Bar -->
+      <div class="control-status-panel">
+        <div>
+          <span style="font-size: var(--font-sm); color: var(--text-muted);">Trạng thái cuộc thi hiện tại:</span>
+          <div style="margin-top: 4px;">
+            <span class="badge badge-success current-state-badge" id="current-state-display">RUNNING</span>
+          </div>
+        </div>
+        <div>
+          <a href="/live.html" target="_blank" class="btn btn-secondary">
+            Mở màn hình chiếu &nearr;
+          </a>
+        </div>
+      </div>
+
+      <!-- Control Grid -->
+      <div class="control-grid">
+        <!-- State Transitions -->
+        <div class="card">
+          <h3 class="control-section-title">
+            <span>⚙</span> Thiết lập trạng thái cuộc thi
+          </h3>
+          <p style="font-size: var(--font-sm); color: var(--text-muted); margin-bottom: var(--space-4);">
+            Bấm chọn để chuyển trạng thái điều phối toàn bộ hệ thống:
+          </p>
+          <div class="state-buttons-group">
+            <button type="button" class="state-btn" data-state="WAITING">
+              <span>1. Chờ bắt đầu (WAITING)</span>
+              <span class="badge badge-warning">Đăng ký trước</span>
+            </button>
+            <button type="button" class="state-btn active" data-state="RUNNING">
+              <span>2. Bắt đầu làm bài (RUNNING)</span>
+              <span class="badge badge-success">Mở nộp bài</span>
+            </button>
+            <button type="button" class="state-btn" data-state="CLOSED">
+              <span>3. Đóng nhận bài (CLOSED)</span>
+              <span class="badge badge-primary">Khóa nộp</span>
+            </button>
+            <button type="button" class="state-btn" data-state="RESULT">
+              <span>4. Công bố kết quả (RESULT)</span>
+              <span class="badge badge-info">Hiện Top 10</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Reports & Tools -->
+        <div class="card">
+          <h3 class="control-section-title">
+            <span>📊</span> Báo cáo & Thống kê
+          </h3>
+          <p style="font-size: var(--font-sm); color: var(--text-muted); margin-bottom: var(--space-4);">
+            Các tác vụ tổng hợp và xuất dữ liệu dự thi:
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+            <button type="button" class="btn btn-secondary btn-block" style="justify-content: flex-start;" id="btn-export-csv">
+              <span>📥</span> Xuất danh sách kết quả (CSV)
+            </button>
+            <button type="button" class="btn btn-secondary btn-block" style="justify-content: flex-start;" id="btn-refresh-stats">
+              <span>🔄</span> Làm mới số liệu tức thời
+            </button>
+          </div>
+
+          <div style="margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--border-color);">
+            <div style="font-size: var(--font-sm); font-weight: 600; margin-bottom: var(--space-2);">Thông số nhanh:</div>
+            <div style="font-size: var(--font-xs); color: var(--text-muted); display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2);">
+              <div>Lượt bài đã nộp: <strong>256</strong></div>
+              <div>Điểm trung bình: <strong>16.8 / 20</strong></div>
+              <div>Thời gian TB: <strong>05m 14s</strong></div>
+              <div>Điểm tuyệt đối: <strong>18 lượt</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="danger-zone">
+        <h3>Khu vực nguy hiểm (Danger Zone)</h3>
+        <p>Thao tác xóa toàn bộ lượt nộp và thiết lập lại cuộc thi từ đầu. Chỉ sử dụng trước giờ khai mạc chính thức.</p>
+        <button type="button" class="btn btn-primary" style="background-color: var(--danger); border-color: var(--danger);" id="btn-reset-competition" onclick="if(confirm('CẢNH BÁO: Hành động này sẽ xóa sạch dữ liệu cuộc thi và không thể hoàn tác. Bạn có chắc chắn không?')) alert('Yêu cầu reset đã được kích hoạt');">
+          Thiết lập lại cuộc thi (Reset Data)
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>Bảng điều khiển cuộc thi</strong> — Dành riêng cho Ban Tổ chức UBND Phường Tùng Thiện</p>
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/control.js"></script>
+</body>
+</html>

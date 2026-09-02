@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hội thi Trắc nghiệm Kiến thức — Phường Tùng Thiện</title>
+  <meta name="description" content="Hệ thống thi trắc nghiệm trực tuyến chào mừng sinh hoạt chính trị UBND Phường Tùng Thiện">
+  <link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="brand-wrapper">
+        <div class="brand-logo-badge">★</div>
+        <div class="brand-text">
+          <p>ĐẢNG BỘ - HĐND - UBND PHƯỜNG TÙNG THIỆN</p>
+          <h1>HỘI THI TRẮC NGHIỆM KIẾN THỨC TRỰC TUYẾN</h1>
+        </div>
+      </a>
+      <nav class="header-nav">
+        <a href="/" class="nav-link">Trang chủ</a>
+        <a href="/live.html" class="nav-link">Màn hình Live</a>
+        <a href="/control.html" class="nav-link">Ban tổ chức</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container" style="max-width: var(--form-max-w);">
+      <div class="card">
+        <div class="card-header">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="badge badge-primary">Sinh hoạt chính trị 2025</span>
+            <span class="badge badge-success">Đang mở</span>
+          </div>
+          <h2 class="card-title" style="margin-top: var(--space-3);">Thông tin người dự thi</h2>
+          <p class="card-subtitle">Vui lòng điền chính xác thông tin để ghi nhận kết quả và xếp hạng.</p>
+        </div>
+
+        <form id="registration-form">
+          <div class="form-group">
+            <label class="form-label" for="fullname">
+              Họ và tên thí sinh <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="fullname"
+              name="fullname"
+              class="form-input"
+              placeholder="Ví dụ: Nguyễn Văn An"
+              required
+              autocomplete="name"
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="organization">
+              Đơn vị công tác / Chi bộ / Tổ dân phố <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="organization"
+              name="organization"
+              class="form-input"
+              placeholder="Ví dụ: Chi bộ Tổ dân phố 3"
+              required
+            >
+          </div>
+
+          <div class="alert alert-info">
+            <strong>Thể lệ dự thi:</strong>
+            <ul style="padding-left: 1.25rem; margin-top: 0.5rem; font-size: 0.875rem;">
+              <li>Bài thi gồm khoảng 20 câu hỏi trắc nghiệm A/B/C/D.</li>
+              <li>Mỗi người chỉ được nộp bài một lần duy nhất.</li>
+              <li>Thứ hạng được tính theo Điểm số cao nhất và Thời gian hoàn thành nhanh nhất.</li>
+            </ul>
+          </div>
+
+          <button type="submit" id="btn-start" class="btn btn-primary btn-block btn-lg">
+            Bắt đầu làm bài thi &rarr;
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>Ủy ban nhân dân phường Tùng Thiện</strong> — Thị xã Sơn Tây, TP. Hà Nội</p>
+      <p style="font-size: 0.75rem; color: var(--text-subtle); margin-top: 4px;">Hệ thống phục vụ sinh hoạt chính trị nội bộ & Ban Tổ chức Hội thi</p>
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

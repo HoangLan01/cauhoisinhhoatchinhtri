@@ -1,0 +1,102 @@
+/* ==========================================================================
+   CONTROL PANEL STYLES - Bảng điều khiển Ban tổ chức
+   ========================================================================== */
+
+.control-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.control-status-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.current-state-badge {
+  font-size: var(--font-base);
+  padding: var(--space-2) var(--space-4);
+}
+
+.control-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.control-section-title {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  margin-bottom: var(--space-4);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.state-buttons-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.state-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--font-base);
+  transition: all var(--transition-fast);
+}
+
+.state-btn:hover {
+  border-color: #94a3b8;
+  background: var(--bg-subtle);
+}
+
+.state-btn.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.danger-zone {
+  border: 1.5px dashed var(--danger);
+  background: #fff5f5;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+
+.danger-zone h3 {
+  color: var(--danger);
+  font-size: var(--font-lg);
+  margin-bottom: var(--space-2);
+}
+
+.danger-zone p {
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+}
+
+@media (max-width: 768px) {
+  .control-grid {
+    grid-template-columns: 1fr;
+  }
+  .control-status-panel {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+}

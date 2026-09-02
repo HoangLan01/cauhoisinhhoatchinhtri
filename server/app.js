@@ -58,8 +58,15 @@ app.get('/health', (req, res) => {
   });
 });
 
+const cookieParser = require('cookie-parser');
+
+// Cookie parser with session secret
+app.use(cookieParser(process.env.SESSION_SECRET || 'dev_secret_key_phuong_tung_thien_2025'));
+
 // Business API routes
 const apiRoutes = require('./routes/api');
+const controlRoutes = require('./routes/control');
+app.use('/api/control', controlRoutes);
 app.use('/api', apiRoutes);
 
 // 404 handler for API routes

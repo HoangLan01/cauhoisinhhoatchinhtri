@@ -58,6 +58,10 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Business API routes
+const apiRoutes = require('./routes/api');
+app.use('/api', apiRoutes);
+
 // 404 handler for API routes
 app.all('/api/*', (req, res) => {
   res.status(404).json({

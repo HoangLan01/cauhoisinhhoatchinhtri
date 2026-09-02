@@ -1,26 +1,482 @@
 [
   {
     "id": 1,
-    "question": "Chỉ thị số 05-CT/TW của Bộ Chính trị khóa XII ban hành về nội dung gì?",
+    "question": "Điểm khác biệt phù hợp nhất giữa “trò chuyện với AI” và “làm việc cùng AI” theo chuyên đề là gì?",
     "options": [
-      { "id": "A", "text": "Đẩy mạnh học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh" },
-      { "id": "B", "text": "Đổi mới căn bản, toàn diện giáo dục và đào tạo" },
-      { "id": "C", "text": "Tăng cường xây dựng, chỉnh đốn Đảng" },
-      { "id": "D", "text": "Chủ động ứng phó với biến đổi khí hậu" }
+      {
+        "id": "A",
+        "text": "Trò chuyện với AI chủ yếu dùng câu hỏi ngắn, còn làm việc cùng AI chủ yếu dùng câu hỏi dài và nhiều thuật ngữ hơn."
+      },
+      {
+        "id": "B",
+        "text": "Trò chuyện với AI lấy câu trả lời làm đích, còn làm việc cùng AI coi AI là công cụ hỗ trợ trong một quy trình có giao việc, dữ liệu, phản hồi và kiểm tra."
+      },
+      {
+        "id": "C",
+        "text": "Trò chuyện với AI phù hợp cho cá nhân, còn làm việc cùng AI chỉ phù hợp trong cơ quan, tổ chức."
+      },
+      {
+        "id": "D",
+        "text": "Trò chuyện với AI không cần dữ liệu, còn làm việc cùng AI bắt buộc phải tải lên toàn bộ tài liệu liên quan."
+      }
     ],
-    "correct": "A",
-    "explanation": "Chỉ thị 05-CT/TW ban hành ngày 15/5/2016 về đẩy mạnh học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh."
+    "correct": "B",
+    "explanation": "“Trò chuyện với AI” thường chỉ dừng ở việc đặt câu hỏi và nhận câu trả lời. “Làm việc cùng AI” là một quy trình đầy đủ hơn: xác định nhiệm vụ, cung cấp dữ liệu/bối cảnh, quy định đầu ra, nhận bản nháp, phản hồi và kiểm tra. Vì vậy, khác biệt nằm ở cách tổ chức công việc với AI, không phải ở việc prompt dài hay ngắn."
   },
   {
     "id": 2,
-    "question": "Mục tiêu tổng quát phát triển kinh tế - xã hội thị xã Sơn Tây / Phường Tùng Thiện hướng tới là gì?",
+    "question": "Trong khung prompt 6 thành phần, nội dung nào thuộc phần CONTEXT?",
     "options": [
-      { "id": "A", "text": "Đô thị văn minh, hiện đại, giàu bản sắc văn hóa lịch sử" },
-      { "id": "B", "text": "Khu công nghiệp nặng trọng điểm phía Tây" },
-      { "id": "C", "text": "Trung tâm khai khoáng và chế xuất vùng" },
-      { "id": "D", "text": "Đô thị công nghệ thông tin tập trung đơn thuần" }
+      {
+        "id": "A",
+        "text": "Quy định AI phải trả lời theo bảng gồm 4 cột."
+      },
+      {
+        "id": "B",
+        "text": "Yêu cầu AI không tự tạo số, ký hiệu văn bản."
+      },
+      {
+        "id": "C",
+        "text": "Cung cấp mục đích xử lý, văn bản nguồn, số liệu, đối tượng và bối cảnh thực tế của nhiệm vụ."
+      },
+      {
+        "id": "D",
+        "text": "Yêu cầu AI rà lại tên cơ quan, thời hạn và số liệu trước khi hoàn thành."
+      }
+    ],
+    "correct": "C",
+    "explanation": "CONTEXT là phần cung cấp bối cảnh và dữ liệu cần thiết để AI hiểu đúng công việc: mục đích xử lý, đối tượng, tài liệu nguồn, số liệu, thời hạn và hoàn cảnh thực tế. Các đáp án A, B và D lần lượt thuộc OUTPUT, LIMITS và CHECK."
+  },
+  {
+    "id": 3,
+    "question": "Nhận định nào đúng nhất về độ dài của prompt?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Prompt càng dài thì xác suất chính xác càng cao vì AI nhận được nhiều chữ hơn."
+      },
+      {
+        "id": "B",
+        "text": "Prompt ngắn luôn tốt hơn vì giảm nguy cơ AI hiểu sai yêu cầu."
+      },
+      {
+        "id": "C",
+        "text": "Độ dài prompt không quan trọng nếu đã chỉ định vai trò cho AI."
+      },
+      {
+        "id": "D",
+        "text": "Prompt tốt cần đủ rõ để giảm phần AI phải tự đoán; không nhất thiết càng dài càng tốt."
+      }
+    ],
+    "correct": "D",
+    "explanation": "Một prompt tốt không được đánh giá bằng số lượng chữ. Prompt cần đủ thông tin để giảm những gì AI phải tự suy đoán. Prompt rất dài nhưng chứa nhiều thông tin không liên quan vẫn có thể cho kết quả kém; ngược lại, một prompt ngắn nhưng rõ nhiệm vụ, dữ liệu và tiêu chí đầu ra vẫn có thể rất hiệu quả."
+  },
+  {
+    "id": 4,
+    "question": "Trong khung 6 thành phần, LIMITS chủ yếu dùng để làm gì?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Đặt hàng rào cho AI: giới hạn nguồn được dùng, điều không được suy đoán và cách xử lý khi thiếu thông tin."
+      },
+      {
+        "id": "B",
+        "text": "Yêu cầu AI lựa chọn vai trò chuyên gia phù hợp với nhiệm vụ."
+      },
+      {
+        "id": "C",
+        "text": "Quy định hình thức trình bày đầu ra như bảng, đoạn văn hay danh sách."
+      },
+      {
+        "id": "D",
+        "text": "Bổ sung thêm dữ liệu nền để AI hiểu chính xác tình huống."
+      }
     ],
     "correct": "A",
-    "explanation": "Định hướng phát triển gắn với bảo tồn văn hóa, lịch sử và xây dựng nếp sống văn minh đô thị."
+    "explanation": "LIMITS là phần đặt hàng rào cho AI, ví dụ: chỉ được sử dụng dữ liệu đã cung cấp, không tự tạo số liệu hoặc căn cứ, không suy đoán khi thiếu thông tin và phải đánh dấu phần cần xác minh. Mục đích là giảm nguy cơ AI tự mở rộng nhiệm vụ quá phạm vi được giao."
+  },
+  {
+    "id": 5,
+    "question": "Kỹ thuật nào dưới đây phù hợp nhất khi muốn AI trả về một bảng có cấu trúc ổn định?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Chỉ yêu cầu “trình bày khoa học và dễ đọc”."
+      },
+      {
+        "id": "B",
+        "text": "Tăng vai trò của AI từ “trợ lý” thành “chuyên gia cao cấp”."
+      },
+      {
+        "id": "C",
+        "text": "Mô tả rõ các cột cần có và, nếu có thể, cung cấp một dòng hoặc một mẫu đầu ra mong muốn."
+      },
+      {
+        "id": "D",
+        "text": "Yêu cầu AI trả lời thật chi tiết rồi tự chuyển thành bảng ở bước sau."
+      }
+    ],
+    "correct": "C",
+    "explanation": "Khi cần một bảng có cấu trúc ổn định, cách hiệu quả nhất là mô tả rõ các cột, quy tắc điền và mẫu đầu ra. AI có một ví dụ cụ thể sẽ hiểu chính xác hơn về “hình dạng” kết quả mà người dùng mong muốn, thay vì phải tự diễn giải cụm từ chung chung như “trình bày khoa học”."
+  },
+  {
+    "id": 6,
+    "question": "Thông điệp cốt lõi nào đúng nhất khi dùng AI trong môi trường công vụ?",
+    "options": [
+      {
+        "id": "A",
+        "text": "AI có thể thay con người ở các bước tạo văn bản nếu đầu ra đủ mạch lạc."
+      },
+      {
+        "id": "B",
+        "text": "AI hỗ trợ tăng năng suất, nhưng con người vẫn phải kiểm tra và chịu trách nhiệm cuối cùng đối với sản phẩm công vụ."
+      },
+      {
+        "id": "C",
+        "text": "AI chỉ nên dùng cho công việc sáng tạo, không phù hợp với văn bản hành chính."
+      },
+      {
+        "id": "D",
+        "text": "Chỉ cần tránh dữ liệu mật thì có thể sử dụng nguyên văn đầu ra của AI."
+      }
+    ],
+    "correct": "B",
+    "explanation": "AI có thể hỗ trợ soạn thảo, tổng hợp, phân tích và kiểm tra để tăng năng suất, nhưng không thay thế trách nhiệm của người thực hiện công vụ. Trước khi một sản phẩm được sử dụng, ký hoặc ban hành, con người vẫn phải kiểm tra tính chính xác, căn cứ, thẩm quyền và chịu trách nhiệm cuối cùng."
+  },
+  {
+    "id": 7,
+    "question": "Một cán bộ dùng prompt: “Đọc công văn này và soạn công văn trả lời giúp tôi”. Nếu chỉ được bổ sung MỘT yếu tố trước tiên để giảm rủi ro AI làm sai mục tiêu, lựa chọn nào hợp lý nhất?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Yêu cầu AI viết với giọng văn trang trọng, chuẩn hành chính."
+      },
+      {
+        "id": "B",
+        "text": "Yêu cầu AI đóng vai chuyên gia có 20 năm kinh nghiệm."
+      },
+      {
+        "id": "C",
+        "text": "Yêu cầu AI viết ngắn gọn, không quá một trang A4."
+      },
+      {
+        "id": "D",
+        "text": "Nêu rõ mục đích xử lý, cơ quan gửi/nhận, dữ liệu nguồn được phép dùng và phạm vi nhiệm vụ cần thực hiện."
+      }
+    ],
+    "correct": "D",
+    "explanation": "Rủi ro lớn nhất của câu “Đọc công văn này và soạn công văn trả lời giúp tôi” là AI không biết chính xác phải xử lý việc gì và trong phạm vi nào. Vì vậy, cần ưu tiên bổ sung mục đích, cơ quan gửi/nhận, nguồn dữ liệu và phạm vi nhiệm vụ. Giọng văn hay độ dài chỉ là yêu cầu thứ cấp nếu AI chưa hiểu đúng việc."
+  },
+  {
+    "id": 8,
+    "question": "Trong một prompt xử lý văn bản, câu nào dưới đây giúp giảm trực tiếp nguy cơ AI “bịa” căn cứ hoặc số liệu nhất?",
+    "options": [
+      {
+        "id": "A",
+        "text": "“Hãy suy nghĩ thật kỹ trước khi trả lời.”"
+      },
+      {
+        "id": "B",
+        "text": "“Chỉ sử dụng thông tin có trong tài liệu được cung cấp; nếu thiếu thì ghi [CẦN XÁC MINH], không tự bổ sung.”"
+      },
+      {
+        "id": "C",
+        "text": "“Hãy trả lời như một chuyên gia pháp lý cấp cao.”"
+      },
+      {
+        "id": "D",
+        "text": "“Hãy cho tôi phương án tốt nhất và đầy đủ nhất có thể.”"
+      }
+    ],
+    "correct": "B",
+    "explanation": "Câu lệnh này trực tiếp đặt ra hai cơ chế kiểm soát: chỉ sử dụng dữ liệu có nguồn và không tự điền phần còn thiếu. Việc yêu cầu ghi [CẦN XÁC MINH] giúp người sử dụng dễ nhận diện những chỗ cần kiểm tra. Các câu như “hãy suy nghĩ kỹ” hoặc “đóng vai chuyên gia” không ngăn được AI tự tạo thông tin."
+  },
+  {
+    "id": 9,
+    "question": "Khi xử lý một tài liệu dài có nhiều nhiệm vụ, quy trình nào phù hợp nhất với kỹ thuật “chia việc lớn thành nhiều bước”?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Trích xuất nhiệm vụ → nhóm theo đơn vị/thời hạn → xác định điểm thiếu → soạn dự thảo → rà soát với nguồn."
+      },
+      {
+        "id": "B",
+        "text": "Soạn dự thảo hoàn chỉnh → yêu cầu AI tóm tắt lại → bổ sung nguồn → kiểm tra nếu có thời gian."
+      },
+      {
+        "id": "C",
+        "text": "Yêu cầu AI đọc toàn bộ → tự lựa chọn thông tin quan trọng → viết văn bản cuối cùng trong một lượt."
+      },
+      {
+        "id": "D",
+        "text": "Tóm tắt toàn bộ tài liệu → yêu cầu AI suy luận nhiệm vụ → dùng bản tóm tắt làm căn cứ duy nhất."
+      }
+    ],
+    "correct": "A",
+    "explanation": "Đây là cách chia một nhiệm vụ phức tạp thành các bước nhỏ có thể kiểm tra độc lập. Sau mỗi bước, cán bộ có thể xác minh kết quả trước khi chuyển sang bước tiếp theo. Cách này giúp giảm nguy cơ một lỗi từ giai đoạn đầu bị kéo theo và khuếch đại trong toàn bộ văn bản cuối."
+  },
+  {
+    "id": 10,
+    "question": "AI đưa ra một số hiệu văn bản pháp luật nghe hợp lý nhưng số hiệu đó không xuất hiện trong tài liệu nguồn. Cách xử lý phù hợp nhất là gì?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Giữ lại nếu nội dung điều khoản có vẻ phù hợp với tình huống."
+      },
+      {
+        "id": "B",
+        "text": "Yêu cầu AI tự kiểm tra lại và nếu AI khẳng định lần hai thì có thể sử dụng."
+      },
+      {
+        "id": "C",
+        "text": "Đánh dấu là nội dung cần xác minh và đối chiếu trên nguồn pháp lý chính thức trước khi đưa vào văn bản."
+      },
+      {
+        "id": "D",
+        "text": "Bỏ số hiệu nhưng giữ nguyên nội dung do AI diễn giải vì phần nội dung vẫn có thể đúng."
+      }
+    ],
+    "correct": "C",
+    "explanation": "AI không phải là nguồn pháp lý chính thức. Một số hiệu văn bản “nghe hợp lý” vẫn có thể hoàn toàn không tồn tại hoặc không phù hợp. Vì vậy, cần đánh dấu để xác minh trên nguồn chính thức, thay vì dựa vào việc AI khẳng định lại hoặc câu chữ có vẻ hợp lý."
+  },
+  {
+    "id": 11,
+    "question": "Một tài liệu có 200 dòng dữ liệu cá nhân, nhưng nhiệm vụ chỉ cần tổng hợp số lượng theo nhóm. Phương án nào phù hợp nhất với nguyên tắc tối thiểu hóa dữ liệu?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Đưa toàn bộ dữ liệu vào AI để AI tự chọn trường nào cần thiết."
+      },
+      {
+        "id": "B",
+        "text": "Ẩn tên nhưng vẫn đưa toàn bộ số điện thoại và địa chỉ để bảo đảm đủ ngữ cảnh."
+      },
+      {
+        "id": "C",
+        "text": "Đưa đầy đủ dữ liệu nếu sử dụng tài khoản AI cá nhân có mật khẩu mạnh."
+      },
+      {
+        "id": "D",
+        "text": "Chỉ đưa các trường thật sự cần cho việc tổng hợp, ưu tiên loại bỏ hoặc ẩn danh thông tin định danh không cần thiết."
+      }
+    ],
+    "correct": "D",
+    "explanation": "Nguyên tắc tối thiểu hóa dữ liệu yêu cầu chỉ sử dụng phần dữ liệu thực sự cần thiết cho nhiệm vụ. Nếu mục tiêu chỉ là thống kê số lượng theo nhóm thì họ tên, số điện thoại, địa chỉ hoặc các thông tin định danh khác có thể không cần thiết và nên được loại bỏ hoặc ẩn danh trước khi xử lý."
+  },
+  {
+    "id": 12,
+    "question": "Vì sao chuyên đề khuyến nghị tách bước “tạo nội dung” và “nghiệm thu” thay vì chỉ yêu cầu AI “tự kiểm tra thật kỹ” trong cùng một lượt?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Vì tách bước giúp văn bản dài hơn và có nhiều nội dung hơn."
+      },
+      {
+        "id": "B",
+        "text": "Vì một lượt rà soát độc lập, đối chiếu lại với nguồn và tiêu chí cụ thể giúp phát hiện lỗi tốt hơn so với chỉ tin vào tự đánh giá của chính đầu ra ban đầu."
+      },
+      {
+        "id": "C",
+        "text": "Vì AI chỉ có thể thực hiện một loại nhiệm vụ trong mỗi cuộc hội thoại."
+      },
+      {
+        "id": "D",
+        "text": "Vì bước nghiệm thu bắt buộc phải được thực hiện bởi một công cụ AI khác."
+      }
+    ],
+    "correct": "B",
+    "explanation": "AI có thể không phát hiện được lỗi của chính nội dung nó vừa tạo, nhất là khi chỉ được yêu cầu chung chung là “kiểm tra lại”. Tách riêng bước nghiệm thu giúp người dùng đặt một nhiệm vụ khác: đối chiếu bản nháp với nguồn, tìm điểm không có căn cứ, kiểm tra số liệu và tiêu chí cụ thể. Đây là quy trình kiểm soát, chứ không phải chỉ dựa vào khả năng tự đánh giá của AI."
+  },
+  {
+    "id": 13,
+    "question": "Nếu cần AI trích xuất “Nhiệm vụ – Đơn vị chủ trì – Thời hạn – Căn cứ”, prompt nào có khả năng cho đầu ra ổn định hơn?",
+    "options": [
+      {
+        "id": "A",
+        "text": "“Trích xuất đúng 4 trường trên thành bảng; mỗi nhiệm vụ một dòng; nếu không tìm thấy trường nào thì ghi ‘Không nêu’; không suy đoán.”"
+      },
+      {
+        "id": "B",
+        "text": "“Hãy đọc kỹ và trình bày những thông tin quan trọng nhất thành bảng dễ hiểu.”"
+      },
+      {
+        "id": "C",
+        "text": "“Hãy đóng vai chuyên gia văn thư và tìm tất cả thông tin có ích trong văn bản.”"
+      },
+      {
+        "id": "D",
+        "text": "“Hãy phân tích sâu văn bản rồi tự lựa chọn cấu trúc bảng phù hợp nhất.”"
+      }
+    ],
+    "correct": "A",
+    "explanation": "Prompt A xác định rõ 4 trường cần lấy, quy định mỗi nhiệm vụ một dòng và đưa ra cách xử lý trường hợp không có dữ liệu. Như vậy, AI ít phải tự quyết định cấu trúc và ít phải suy đoán. Đây chính là cách sử dụng OUTPUT và LIMITS để tăng tính ổn định của kết quả."
+  },
+  {
+    "id": 14,
+    "question": "Một cán bộ muốn dùng AI để rà lại dự thảo công văn. Yêu cầu nào phù hợp nhất với vai trò AI như “bản nháp thông minh” và công cụ hỗ trợ kiểm tra?",
+    "options": [
+      {
+        "id": "A",
+        "text": "“Hãy xác nhận văn bản này đã hoàn toàn đúng quy định và đủ điều kiện ký.”"
+      },
+      {
+        "id": "B",
+        "text": "“Hãy sửa trực tiếp mọi điểm bạn cho là chưa đúng, kể cả khi tài liệu nguồn không đề cập.”"
+      },
+      {
+        "id": "C",
+        "text": "“Đối chiếu dự thảo với tài liệu nguồn; lập danh sách điểm khớp, điểm chưa có căn cứ và nội dung cần cán bộ xác minh trước khi ký.”"
+      },
+      {
+        "id": "D",
+        "text": "“Nếu văn bản đọc trôi chảy và hợp lý thì kết luận là có thể ban hành.”"
+      }
+    ],
+    "correct": "C",
+    "explanation": "AI phù hợp để hỗ trợ đối chiếu và phát hiện điểm cần kiểm tra, nhưng không nên được yêu cầu tự xác nhận văn bản đã “đủ điều kiện ký”. Đáp án C giữ đúng vai trò của AI: chỉ ra phần khớp, phần thiếu căn cứ và điểm cán bộ phải xác minh trước khi quyết định sử dụng."
+  },
+  {
+    "id": 15,
+    "question": "Tình huống: AI đã trích xuất đúng 95% nhiệm vụ từ một kế hoạch nhưng bỏ sót một nhiệm vụ có thời hạn gấp. Nhận định nào phù hợp nhất với thông điệp của chuyên đề?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Có thể dùng kết quả vì tỷ lệ chính xác 95% là đủ cao cho công việc hành chính thông thường."
+      },
+      {
+        "id": "B",
+        "text": "Chỉ cần yêu cầu AI chạy lại một lần; nếu hai lần giống nhau thì xem như đã xác minh."
+      },
+      {
+        "id": "C",
+        "text": "Sai sót là chấp nhận được nếu nhiệm vụ bị bỏ sót không làm thay đổi tổng số đơn vị tham gia."
+      },
+      {
+        "id": "D",
+        "text": "Độ chính xác tổng thể cao không thay thế bước nghiệm thu; các trường trọng yếu như nhiệm vụ, thời hạn, thẩm quyền vẫn phải đối chiếu nguồn trước khi sử dụng."
+      }
+    ],
+    "correct": "D",
+    "explanation": "Với công việc hành chính, 95% đúng chưa chắc đã đủ, vì 5% sai có thể nằm đúng vào một nhiệm vụ quan trọng hoặc một thời hạn cấp bách. Chất lượng không chỉ được đánh giá bằng tỷ lệ chính xác tổng thể mà còn phải xem mức độ nghiêm trọng của sai sót. Do đó, các trường trọng yếu vẫn phải được nghiệm thu với tài liệu gốc."
+  },
+  {
+    "id": 16,
+    "question": "Tình huống: Cùng một tài liệu, Prompt A yêu cầu “tóm tắt thật đầy đủ”; Prompt B yêu cầu “trích 5 trường cụ thể, dẫn vị trí trong tài liệu và đánh dấu phần không tìm thấy”. Vì sao Prompt B thường phù hợp hơn cho công việc cần kiểm chứng?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Vì Prompt B biến yêu cầu thành các tiêu chí đầu ra có thể kiểm tra và giảm khoảng trống để AI tự diễn giải."
+      },
+      {
+        "id": "B",
+        "text": "Vì Prompt B dài hơn nên mô hình có nhiều token để suy luận chính xác hơn."
+      },
+      {
+        "id": "C",
+        "text": "Vì Prompt B yêu cầu ít thông tin hơn nên luôn có độ chính xác cao hơn mọi loại prompt tóm tắt."
+      },
+      {
+        "id": "D",
+        "text": "Vì khi đã yêu cầu dẫn vị trí, người dùng không cần đọc lại tài liệu gốc."
+      }
+    ],
+    "correct": "A",
+    "explanation": "Prompt B tốt hơn không phải vì dài hơn, mà vì biến một yêu cầu mơ hồ thành các tiêu chí có thể kiểm chứng: lấy đúng 5 trường, chỉ vị trí nguồn và đánh dấu phần không tìm thấy. Điều này giúp giảm không gian AI tự diễn giải và giúp người sử dụng dễ đối chiếu với tài liệu gốc."
+  },
+  {
+    "id": 17,
+    "question": "Tình huống: Một dự thảo do AI tạo ra đúng dữ liệu nguồn nhưng câu kết lại thể hiện UBND phường “quyết định” một vấn đề thuộc thẩm quyền cơ quan cấp trên. Sai sót này cho thấy khâu nào cần được kiểm tra kỹ nhất?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Chỉ cần kiểm tra giọng văn vì dữ liệu nguồn đã đúng."
+      },
+      {
+        "id": "B",
+        "text": "Chỉ cần bổ sung thêm ROLE để AI hiểu mình là cán bộ cấp phường."
+      },
+      {
+        "id": "C",
+        "text": "Ngoài dữ liệu, phải kiểm tra thẩm quyền, mục đích văn bản và hành động mà dự thảo đang nhân danh cơ quan thực hiện."
+      },
+      {
+        "id": "D",
+        "text": "Chỉ cần đổi từ “quyết định” sang “đề nghị” là có thể xem như đã xử lý đầy đủ rủi ro."
+      }
+    ],
+    "correct": "C",
+    "explanation": "Một văn bản có thể dùng đúng số liệu nhưng vẫn sai về thẩm quyền và hành vi hành chính. Nếu UBND phường đang “quyết định” một việc thuộc thẩm quyền cấp trên thì vấn đề không nằm ở dữ liệu mà nằm ở mục đích, chủ thể và thẩm quyền của văn bản. Vì vậy, kiểm tra nội dung hành chính phải rộng hơn việc chỉ kiểm tra số liệu."
+  },
+  {
+    "id": 18,
+    "question": "Tình huống: Một cán bộ đưa bản danh sách người dân có họ tên, số điện thoại và nội dung phản ánh vào AI để nhờ “tổng hợp các nhóm vấn đề”. Cách làm nào phù hợp nhất?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Giữ nguyên dữ liệu vì nội dung phản ánh cần đủ chi tiết để AI phân loại chính xác."
+      },
+      {
+        "id": "B",
+        "text": "Xác định trường dữ liệu thật sự cần, loại bỏ/ẩn danh thông tin định danh không cần thiết, dùng công cụ phù hợp quy định và vẫn kiểm tra đầu ra trước khi sử dụng."
+      },
+      {
+        "id": "C",
+        "text": "Chỉ xóa số điện thoại; họ tên nên giữ lại để AI nhận diện các phản ánh trùng lặp."
+      },
+      {
+        "id": "D",
+        "text": "Có thể dùng toàn bộ dữ liệu nếu prompt ghi thêm “không được tiết lộ thông tin này”."
+      }
+    ],
+    "correct": "B",
+    "explanation": "Việc phân loại phản ánh có thể không cần sử dụng đầy đủ họ tên và số điện thoại. Cách phù hợp là xác định đúng trường dữ liệu cần thiết, ẩn danh hoặc loại bỏ dữ liệu định danh không cần thiết, sử dụng công cụ phù hợp với quy định và tiếp tục kiểm tra kết quả. Việc chỉ ghi trong prompt “không được tiết lộ” không tự động làm cho việc đưa dữ liệu vào hệ thống trở nên an toàn."
+  },
+  {
+    "id": 19,
+    "question": "Tình huống: Người dùng muốn AI vừa đọc 40 trang tài liệu, tự xác định nhiệm vụ, đánh giá pháp lý, soạn công văn trả lời và tự xác nhận văn bản đủ điều kiện ký trong một prompt. Rủi ro chính của cách làm này là gì?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Prompt quá dài nên mô hình chắc chắn không thể xử lý được toàn bộ tài liệu."
+      },
+      {
+        "id": "B",
+        "text": "Có quá nhiều yêu cầu khiến chi phí sử dụng AI luôn cao hơn so với làm thủ công."
+      },
+      {
+        "id": "C",
+        "text": "Không thể sử dụng AI cho nhiều nhiệm vụ liên tiếp trong cùng một cuộc hội thoại."
+      },
+      {
+        "id": "D",
+        "text": "Nhiều bước có mức độ rủi ro khác nhau bị gộp vào một lượt, khó kiểm soát nguồn, khó phát hiện sai và dễ biến AI từ công cụ hỗ trợ thành người “tự kết luận”."
+      }
+    ],
+    "correct": "D",
+    "explanation": "Vấn đề không phải AI tuyệt đối không thể xử lý một prompt dài, mà là quá nhiều bước có mức độ rủi ro khác nhau đang bị gộp chung. Trích xuất thông tin, đánh giá pháp lý, soạn văn bản và xác nhận đủ điều kiện ký là bốn nhiệm vụ rất khác nhau. Gộp tất cả khiến khó xác định lỗi xuất hiện ở bước nào và dễ trao cho AI vai trò vượt quá mức hỗ trợ."
+  },
+  {
+    "id": 20,
+    "question": "Tình huống: Trong chuyên đề, AI và Zalo Mini App được đặt cạnh nhau. Cách hiểu nào phản ánh đúng nhất mối quan hệ giữa hai nội dung?",
+    "options": [
+      {
+        "id": "A",
+        "text": "AI minh họa năng lực hỗ trợ xử lý công việc của cán bộ; Zalo Mini App minh họa một điểm chạm số phục vụ người dân. Hai nội dung bổ trợ cho tư duy chuyển đổi số nhưng không đồng nhất và không thay thế nhau."
+      },
+      {
+        "id": "B",
+        "text": "Zalo Mini App là giao diện triển khai AI, vì vậy mọi chức năng của Mini App nên được tự động hóa bằng AI để đạt hiệu quả cao."
+      },
+      {
+        "id": "C",
+        "text": "AI là công nghệ cốt lõi còn Mini App chỉ là phần trình bày, nên hiệu quả của Mini App phụ thuộc chủ yếu vào mức độ tích hợp AI."
+      },
+      {
+        "id": "D",
+        "text": "AI và Mini App cùng là công cụ số nên có thể áp dụng chung một quy trình kiểm soát mà không cần phân biệt dữ liệu, người dùng và mục tiêu phục vụ."
+      }
+    ],
+    "correct": "A",
+    "explanation": "Trong chuyên đề, AI và Zalo Mini App được đặt cạnh nhau để minh họa hai hướng ứng dụng công nghệ khác nhau. AI hỗ trợ cán bộ xử lý công việc hiệu quả hơn; Zalo Mini App tạo một điểm tiếp cận số thuận tiện hơn cho người dân. Hai nội dung cùng phục vụ mục tiêu chuyển đổi số nhưng không đồng nhất, và Mini App không nhất thiết phải tích hợp AI mới có giá trị."
   }
 ]

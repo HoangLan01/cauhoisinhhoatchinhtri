@@ -8,125 +8,220 @@
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/live.css">
 </head>
-<body style="background-color: #f1f5f9;">
+<body class="live-page-body">
   <!-- Header -->
   <header class="site-header">
-    <div class="container header-inner">
+    <div class="container header-inner" style="max-width: 1440px;">
       <a href="/" class="brand-wrapper">
         <div class="brand-logo-badge">★</div>
         <div class="brand-text">
           <p>ĐẢNG BỘ - HĐND - UBND PHƯỜNG TÙNG THIỆN</p>
-          <h1>TRÌNH CHIẾU TRỰC TIẾP HỘI THI TRẮC NGHIỆM</h1>
+          <h1>HỘI NGHỊ TRỰC TUYẾN — MÀN HÌNH THEO DÕI HỘI TRƯỜNG</h1>
         </div>
       </a>
-      <div style="display: flex; align-items: center; gap: var(--space-3);">
-        <span class="badge badge-success" id="live-state-badge" style="font-size: var(--font-sm); padding: 0.5rem 1rem;">
-          ● ĐANG DIỄN RA
+      <div class="live-header-actions">
+        <!-- Trạng thái cuộc thi thời gian thực -->
+        <span class="badge badge-success badge-pulse" id="live-state-badge">
+          <span class="pulse-dot"></span> <span id="state-badge-text">ĐANG DIỄN RA</span>
         </span>
-        <a href="/control.html" class="nav-link" style="border: 1px solid rgba(255,255,255,0.3); border-radius: var(--radius-sm);">Điều khiển</a>
+
+        <!-- Nút Toàn màn hình máy chiếu -->
+        <button type="button" class="btn-fullscreen" id="btn-toggle-fullscreen" title="Phóng to toàn màn hình máy chiếu">
+          <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+          <span id="fullscreen-btn-text">Toàn màn hình</span>
+        </button>
       </div>
     </div>
   </header>
 
   <!-- Main Content -->
-  <main class="main-content">
+  <main class="main-content" style="padding-top: var(--space-4);">
     <div class="live-wrapper">
       <div class="live-banner">
-        <h2>BẢNG TIẾN ĐỘ VÀ KẾT QUẢ THỜI GIAN THỰC</h2>
-        <p>Hội thi trắc nghiệm sinh hoạt chính trị năm 2025 — Chào mừng đại hội các cấp</p>
+        <h2 id="live-competition-title">HỘI THI TRẮC NGHIỆM KIẾN THỨC NĂM 2025</h2>
+        <p>Hệ thống tự động đồng bộ kết quả trực tiếp trên máy chủ UBND phường Tùng Thiện</p>
       </div>
 
-      <!-- Realtime 4-Column Stats -->
-      <div class="stats-grid">
-        <div class="stat-box">
-          <div class="stat-val" id="stat-total">342</div>
-          <div class="stat-label">Tổng người tham gia</div>
-        </div>
-        <div class="stat-box highlight">
-          <div class="stat-val" id="stat-taking" style="color: var(--accent);">86</div>
-          <div class="stat-label">Đang làm bài</div>
-        </div>
-        <div class="stat-box success">
-          <div class="stat-val" id="stat-completed" style="color: var(--success);">256</div>
-          <div class="stat-label">Đã nộp bài</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-val" id="stat-rate" style="color: var(--primary);">74.8%</div>
-          <div class="stat-label">Tỉ lệ hoàn thành</div>
-        </div>
-      </div>
-
-      <!-- Leaderboard Top 10 -->
-      <div class="leaderboard-card">
-        <div class="leaderboard-header">
-          <div class="leaderboard-title">
-            <span style="color: var(--accent);">🏆</span> BẢNG XẾP HẠNG TOP 10 XUẤT SẮC NHẤT
+      <!-- ============================================================== -->
+      <!-- VIEW 1: WAITING (Phòng chờ & QR Code lớn cho hội trường)       -->
+      <!-- ============================================================== -->
+      <section id="view-waiting" class="state-view">
+        <div class="waiting-grid">
+          <div class="waiting-qr-card">
+            <div class="qr-box" id="qr-code-container">
+              <!-- Mã QR sẽ được vẽ bằng SVG ở đây -->
+            </div>
+            <div class="qr-domain-badge" id="qr-domain-text">
+              https://cau-hoi.phuongtungthien.vn
+            </div>
+            <p style="font-size: var(--font-sm); color: var(--text-muted); margin-top: var(--space-3);">
+              Quét mã QR bằng Camera điện thoại hoặc Zalo để tham gia
+            </p>
           </div>
-          <div style="font-size: var(--font-sm); color: var(--text-muted);">
-            Tiêu chí: <strong>1. Điểm cao nhất</strong> &bull; <strong>2. Thời gian nhanh nhất</strong>
+
+          <div class="waiting-instructions">
+            <div style="margin-bottom: var(--space-2);">
+              <span class="badge badge-warning" style="font-size: var(--font-sm); padding: 0.4rem 0.8rem;">GIAI ĐOẠN ĐĂNG KÝ</span>
+              <h3 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-top: 0.5rem;">
+                Hướng dẫn tham gia dự thi
+              </h3>
+            </div>
+
+            <div class="instruction-step">
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <h4>Quét mã QR hoặc truy cập đường dẫn</h4>
+                <p>Mở ứng dụng Zalo, Camera hoặc trình duyệt web trên điện thoại để quét mã bên cạnh.</p>
+              </div>
+            </div>
+
+            <div class="instruction-step">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <h4>Nhập Họ tên và chọn Đơn vị công tác</h4>
+                <p>Điền đầy đủ thông tin định danh chính xác để Ban Tổ chức ghi nhận kết quả và xếp hạng.</p>
+              </div>
+            </div>
+
+            <div class="instruction-step">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <h4>Chờ hiệu lệnh bắt đầu từ Ban Tổ chức</h4>
+                <p>Màn hình làm bài sẽ tự động kích hoạt khi hội đồng mở đề thi.</p>
+              </div>
+            </div>
+
+            <div style="background: var(--bg-subtle); padding: var(--space-4); border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 600; color: var(--text-muted);">Số thí sinh đã vào hệ thống:</span>
+              <strong style="font-size: var(--font-xl); color: var(--primary);" id="waiting-registered-count">0</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- VIEW 2: RUNNING (Đang diễn ra thi - Thống kê lớn & Tiến độ)    -->
+      <!-- ============================================================== -->
+      <section id="view-running" class="state-view active">
+        <!-- 4 Khối thống kê lớn trực quan -->
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-val" id="stat-registered">0</div>
+            <div class="stat-label">Tổng thí sinh tham gia</div>
+          </div>
+          <div class="stat-box highlight">
+            <div class="stat-val" id="stat-playing" style="color: var(--accent);">0</div>
+            <div class="stat-label">Đang làm bài</div>
+          </div>
+          <div class="stat-box success">
+            <div class="stat-val" id="stat-completed" style="color: var(--success);">0</div>
+            <div class="stat-label">Đã nộp bài thi</div>
+          </div>
+          <div class="stat-box info">
+            <div class="stat-val" id="stat-rate" style="color: var(--info);">0%</div>
+            <div class="stat-label">Tỉ lệ hoàn thành</div>
           </div>
         </div>
 
-        <table class="leaderboard-table">
-          <thead>
-            <tr>
-              <th style="width: 80px; text-align: center;">Hạng</th>
-              <th>Họ và tên thí sinh</th>
-              <th>Đơn vị công tác</th>
-              <th style="text-align: center;">Điểm số</th>
-              <th style="text-align: right;">Thời gian làm bài</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboard-body">
-            <tr>
-              <td style="text-align: center;"><span class="rank-badge rank-1">1</span></td>
-              <td><strong>Trần Thị Mai</strong></td>
-              <td>Chi bộ Trường Tiểu học Tùng Thiện</td>
-              <td style="text-align: center;" class="score-cell">20 / 20</td>
-              <td style="text-align: right;" class="duration-cell">03 phút 15 giây</td>
-            </tr>
-            <tr>
-              <td style="text-align: center;"><span class="rank-badge rank-2">2</span></td>
-              <td><strong>Nguyễn Văn An</strong></td>
-              <td>Chi bộ Quân sự Phường</td>
-              <td style="text-align: center;" class="score-cell">20 / 20</td>
-              <td style="text-align: right;" class="duration-cell">03 phút 48 giây</td>
-            </tr>
-            <tr>
-              <td style="text-align: center;"><span class="rank-badge rank-3">3</span></td>
-              <td><strong>Lê Hoàng Nam</strong></td>
-              <td>Đoàn Thanh niên Phường</td>
-              <td style="text-align: center;" class="score-cell">20 / 20</td>
-              <td style="text-align: right;" class="duration-cell">04 phút 02 giây</td>
-            </tr>
-            <tr>
-              <td style="text-align: center;"><span class="rank-badge" style="background: #e2e8f0; color: #475569;">4</span></td>
-              <td>Phạm Thu Hương</td>
-              <td>Chi bộ Tổ dân phố 2</td>
-              <td style="text-align: center;" class="score-cell">19 / 20</td>
-              <td style="text-align: right;" class="duration-cell">03 phút 30 giây</td>
-            </tr>
-            <tr>
-              <td style="text-align: center;"><span class="rank-badge" style="background: #e2e8f0; color: #475569;">5</span></td>
-              <td>Vũ Đức Thịnh</td>
-              <td>Chi bộ Công an Phường</td>
-              <td style="text-align: center;" class="score-cell">19 / 20</td>
-              <td style="text-align: right;" class="duration-cell">03 phút 55 giây</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        <!-- Thanh tiến độ tổng quan khổng lồ -->
+        <div class="live-progress-card">
+          <div class="live-progress-header">
+            <span>Tiến độ hoàn thành bài thi toàn hội đồng:</span>
+            <span id="giant-progress-percent" style="color: var(--primary);">0%</span>
+          </div>
+          <div class="giant-progress-container">
+            <div class="giant-progress-fill" id="giant-progress-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Khung giữ nhiệt & bảo mật bảng xếp hạng trong lúc thi -->
+        <div class="running-teaser-box">
+          <h3>HỘI THI ĐANG DIỄN RA SÔI NỔI</h3>
+          <p>Bảng xếp hạng Top 10 xuất sắc nhất sẽ được vinh danh trang trọng ngay sau khi Ban Tổ chức đóng nhận bài thi.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- VIEW 3: CLOSED (Đóng nhận bài - Đang tổng hợp)                  -->
+      <!-- ============================================================== -->
+      <section id="view-closed" class="state-view">
+        <div class="closed-card">
+          <div class="closed-icon-pulse">
+            <svg style="width: 44px; height: 44px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 style="font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: var(--space-2);">
+            ĐÃ HẾT THỜI GIAN LÀM BÀI THI
+          </h3>
+          <p style="font-size: var(--font-lg); color: var(--text-muted); max-width: 600px; margin: 0 auto var(--space-6);">
+            Hệ thống máy chủ đã đóng nhận bài. Ban Tổ chức và Ban Giám khảo đang đối soát, khóa dữ liệu để chuẩn bị công bố kết quả.
+          </p>
+          <div style="display: inline-flex; gap: var(--space-6); background: var(--bg-subtle); padding: var(--space-4) var(--space-8); border-radius: var(--radius-lg);">
+            <div>
+              <div style="font-size: var(--font-xs); font-weight: 700; text-transform: uppercase; color: var(--text-subtle);">Tổng người tham gia</div>
+              <div style="font-size: 1.75rem; font-weight: 800; color: var(--text-main);" id="closed-total-registered">0</div>
+            </div>
+            <div style="border-left: 1px solid var(--border-color); padding-left: var(--space-6);">
+              <div style="font-size: var(--font-xs); font-weight: 700; text-transform: uppercase; color: var(--text-subtle);">Bài nộp hoàn thành</div>
+              <div style="font-size: 1.75rem; font-weight: 800; color: var(--success);" id="closed-total-completed">0</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- VIEW 4: RESULT (Vinh danh Bảng xếp hạng Top 10)                 -->
+      <!-- ============================================================== -->
+      <section id="view-result" class="state-view">
+        <div style="text-align: center; margin-bottom: var(--space-5);">
+          <span class="badge badge-success" style="font-size: var(--font-sm); padding: 0.4rem 1rem;">KẾT QUẢ CHÍNH THỨC</span>
+          <h3 style="font-size: 2rem; font-weight: 900; color: var(--primary); margin-top: 0.5rem; text-transform: uppercase;">
+            🏆 BẢNG VINH DANH TOP 10 XUẤT SẮC NHẤT
+          </h3>
+          <p style="font-size: var(--font-sm); color: var(--text-muted);">
+            Tiêu chí xếp hạng: <strong>1. Điểm số cao nhất</strong> &bull; <strong>2. Thời gian hoàn thành nhanh nhất</strong>
+          </p>
+        </div>
+
+        <!-- Top 3 Podium Cards -->
+        <div class="podium-grid" id="podium-container">
+          <!-- Top 3 được render qua JavaScript -->
+        </div>
+
+        <!-- Bảng xếp hạng Ranks 4 to 10 -->
+        <div class="leaderboard-card">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th style="width: 70px; text-align: center;">Hạng</th>
+                <th>Họ và tên thí sinh</th>
+                <th>Đơn vị công tác</th>
+                <th style="text-align: center; width: 140px;">Điểm số</th>
+                <th style="text-align: right; width: 180px;">Thời gian làm bài</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-table-body">
+              <!-- Ranks 4-10 được render qua JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
     </div>
   </main>
 
   <!-- Footer -->
   <footer class="site-footer">
-    <div class="container">
-      <p><strong>Hệ thống hiển thị kết quả trực tiếp</strong> — UBND Phường Tùng Thiện &bull; Tối ưu trình chiếu máy chiếu 16:9</p>
+    <div class="container" style="max-width: 1440px;">
+      <p><strong>Hệ thống hiển thị kết quả trực tiếp</strong> — UBND Phường Tùng Thiện &bull; Tối ưu hóa trình chiếu máy chiếu 16:9</p>
     </div>
   </footer>
 
   <script src="/js/api.js"></script>
+  <script src="/js/qrcode.js"></script>
   <script src="/js/live.js"></script>
 </body>
 </html>

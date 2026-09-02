@@ -1,49 +1,218 @@
 /* ==========================================================================
    LIVE SCREEN STYLES - Màn hình trình chiếu hội trường 16:9
+   Tối ưu: Máy chiếu Full HD 1920x1080 & Laptop 1366x768
    ========================================================================== */
 
-.live-wrapper {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: var(--space-4);
+.live-page-body {
+  background-color: #f1f5f9;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
+.live-wrapper {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--space-4);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header & Fullscreen Button */
+.live-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.btn-fullscreen {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+
+.btn-fullscreen:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: #fff;
+}
+
+/* Pulsing state badge */
+.badge-pulse {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5rem 1rem;
+  font-size: var(--font-sm);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+  animation: pulse-ring 1.5s infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* Main Display Banner */
 .live-banner {
   text-align: center;
-  padding: var(--space-6) 0 var(--space-8);
+  padding: var(--space-4) 0 var(--space-6);
 }
 
 .live-banner h2 {
-  font-size: var(--font-3xl);
+  font-size: 2.25rem;
   font-weight: 800;
   color: var(--primary);
   text-transform: uppercase;
   letter-spacing: -0.01em;
+  margin-bottom: 0.25rem;
 }
 
 .live-banner p {
-  font-size: var(--font-lg);
+  font-size: 1.125rem;
   color: var(--text-muted);
-  margin-top: var(--space-2);
 }
 
-/* Stats Counter Grid */
+/* State Views Container */
+.state-view {
+  display: none;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.state-view.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   VIEW 1: WAITING (Màn hình chờ khai mạc & QR Code lớn)
+   ========================================================================== */
+.waiting-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-6);
+}
+
+.waiting-qr-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-6);
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.qr-box {
+  padding: var(--space-4);
+  background: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-4);
+}
+
+.qr-domain-badge {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: var(--font-lg);
+  font-weight: 700;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--primary-border);
+  letter-spacing: 0.02em;
+  word-break: break-all;
+}
+
+.waiting-instructions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.instruction-step {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+
+.step-num {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: var(--font-lg);
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(185, 28, 28, 0.3);
+}
+
+.step-content h4 {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.step-content p {
+  font-size: var(--font-base);
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   VIEW 2: RUNNING (Màn hình đang thi: 4 Khối số to & Progress Bar)
+   ========================================================================== */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-4);
-  margin-bottom: var(--space-8);
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
 }
 
 .stat-box {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5) var(--space-4);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6) var(--space-4);
   text-align: center;
   box-shadow: var(--shadow-sm);
   position: relative;
   overflow: hidden;
+  transition: transform var(--transition-fast);
 }
 
 .stat-box::before {
@@ -52,7 +221,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 5px;
   background: var(--primary);
 }
 
@@ -64,24 +233,204 @@
   background: var(--success);
 }
 
+.stat-box.info::before {
+  background: var(--info);
+}
+
 .stat-val {
-  font-size: 2.75rem;
-  font-weight: 800;
-  line-height: 1.1;
+  font-size: 3.5rem; /* Rất lớn, đọc rõ từ 20m */
+  font-weight: 900;
+  line-height: 1;
   color: var(--text-main);
   font-variant-numeric: tabular-nums;
-  margin-bottom: var(--space-1);
+  margin-bottom: var(--space-2);
 }
 
 .stat-label {
-  font-size: var(--font-sm);
-  font-weight: 600;
+  font-size: var(--font-base);
+  font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-/* Leaderboard Section */
+/* Giant Live Progress Bar */
+.live-progress-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-6);
+}
+
+.live-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+  font-size: var(--font-base);
+  font-weight: 700;
+}
+
+.giant-progress-container {
+  width: 100%;
+  height: 24px;
+  background-color: var(--bg-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.giant-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--success));
+  width: 0%;
+  transition: width 0.8s ease-in-out;
+  border-radius: var(--radius-full);
+}
+
+.running-teaser-box {
+  background: linear-gradient(135deg, #fef2f2, #fffbeb);
+  border: 1.5px dashed #fca5a5;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.running-teaser-box h3 {
+  color: var(--primary);
+  font-size: var(--font-xl);
+  font-weight: 800;
+  margin-bottom: var(--space-2);
+}
+
+.running-teaser-box p {
+  color: var(--text-muted);
+  font-size: var(--font-base);
+}
+
+/* ==========================================================================
+   VIEW 3: CLOSED (Đóng nhận bài & Đang tổng hợp)
+   ========================================================================== */
+.closed-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--space-10) var(--space-6);
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+
+.closed-icon-pulse {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  background: var(--warning-light);
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+  animation: pulse-ring 2s infinite;
+}
+
+/* ==========================================================================
+   VIEW 4: RESULT (Vinh danh Bảng xếp hạng Top 10)
+   ========================================================================== */
+/* Top 3 Podium */
+.podium-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.podium-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  border: 2px solid var(--border-color);
+  padding: var(--space-5);
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--transition-fast);
+}
+
+.podium-card.gold {
+  border-color: #f59e0b;
+  background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%);
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.25);
+}
+
+.podium-card.silver {
+  border-color: #94a3b8;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+.podium-card.bronze {
+  border-color: #d97706;
+  background: linear-gradient(180deg, #fffaf0 0%, #ffffff 100%);
+}
+
+.podium-medal {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-full);
+  margin: 0 auto var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+.medal-gold {
+  background: linear-gradient(135deg, #fbbf24, #d97706);
+  box-shadow: 0 4px 10px rgba(217, 119, 6, 0.4);
+}
+
+.medal-silver {
+  background: linear-gradient(135deg, #cbd5e1, #64748b);
+  box-shadow: 0 4px 10px rgba(100, 116, 139, 0.3);
+}
+
+.medal-bronze {
+  background: linear-gradient(135deg, #f59e0b, #b45309);
+  box-shadow: 0 4px 10px rgba(180, 83, 9, 0.3);
+}
+
+.podium-name {
+  font-size: var(--font-xl);
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.podium-org {
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-3);
+  min-height: 38px;
+}
+
+.podium-score {
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: var(--primary);
+}
+
+.podium-duration {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--text-subtle);
+}
+
+/* Leaderboard Table (Ranks 4-10) */
 .leaderboard-card {
   background: var(--bg-card);
   border-radius: var(--radius-xl);
@@ -89,24 +438,6 @@
   box-shadow: var(--shadow-md);
   padding: var(--space-6);
   overflow: hidden;
-}
-
-.leaderboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-6);
-  padding-bottom: var(--space-4);
-  border-bottom: 2px solid var(--bg-subtle);
-}
-
-.leaderboard-title {
-  font-size: var(--font-2xl);
-  font-weight: 700;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
 }
 
 .leaderboard-table {
@@ -117,7 +448,7 @@
 
 .leaderboard-table th {
   padding: var(--space-3) var(--space-4);
-  font-size: var(--font-xs);
+  font-size: var(--font-sm);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -126,10 +457,10 @@
 }
 
 .leaderboard-table td {
-  padding: var(--space-4);
+  padding: var(--space-3) var(--space-4);
   background-color: var(--bg-body);
   font-size: var(--font-base);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .leaderboard-table tr td:first-child {
@@ -144,31 +475,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius-full);
   font-weight: 800;
   font-size: var(--font-base);
 }
 
-.rank-1 {
-  background: linear-gradient(135deg, #fbbf24, #d97706);
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.4);
-}
-
-.rank-2 {
-  background: linear-gradient(135deg, #94a3b8, #64748b);
-  color: #fff;
-}
-
-.rank-3 {
-  background: linear-gradient(135deg, #d97706, #b45309);
-  color: #fff;
+.rank-other {
+  background: #e2e8f0;
+  color: #475569;
 }
 
 .score-cell {
-  font-weight: 700;
+  font-weight: 800;
   color: var(--primary);
   font-size: var(--font-lg);
 }
@@ -178,9 +498,22 @@
   color: var(--text-muted);
 }
 
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
 @media (max-width: 1024px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .waiting-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+  .podium-grid {
+    grid-template-columns: 1fr;
+  }
+  .podium-card.gold {
+    transform: none;
   }
 }
 
@@ -188,8 +521,11 @@
   .stats-grid {
     grid-template-columns: 1fr;
   }
+  .stat-val {
+    font-size: 2.75rem;
+  }
   .live-banner h2 {
-    font-size: var(--font-2xl);
+    font-size: 1.75rem;
   }
   .leaderboard-table {
     display: block;

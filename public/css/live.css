@@ -47,6 +47,21 @@
   border-color: #fff;
 }
 
+/* Chế độ giả lập toàn màn hình phòng khi browser/iframe chặn Fullscreen API */
+body.pseudo-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 999999 !important;
+  margin: 0 !important;
+  overflow-y: auto !important;
+  background: var(--bg-main) !important;
+}
+
 /* Pulsing state badge */
 .badge-pulse {
   position: relative;

@@ -72,28 +72,89 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // LOGIC TOÀN MÀN HÌNH (FULLSCREEN)
+  // LOGIC TOÀN MÀN HÌNH (FULLSCREEN & PSEUDO-FULLSCREEN FALLBACK)
   // =========================================================================
   function initFullscreenToggle() {
     if (!btnFullscreen) return;
 
-    btnFullscreen.addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch((err) => {
-          console.warn('[Live] Lỗi bật fullscreen:', err);
-        });
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
+    function isCurrentlyFullscreen() {
+      return !!(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement ||
+        document.body.classList.contains('pseudo-fullscreen')
+      );
+    }
+
+    function updateFullscreenUI() {
+      const active = isCurrentlyFullscreen();
+      if (fullscreenBtnText) {
+        fullscreenBtnText.textContent = active ? 'Thu nhỏ' : 'Toàn màn hình';
+      }
+      btnFullscreen.setAttribute('title', active ? 'Thu nhỏ màn hình (Esc hoặc bấm lại)' : 'Phóng to toàn màn hình máy chiếu');
+
+      const svg = btnFullscreen.querySelector('svg');
+      if (svg) {
+        if (active) {
+          // Icon thu nhỏ (Compress)
+          svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 14h6v6m10-10h-6V4m0 6l7-7M10 14l-7 7" />';
+        } else {
+          // Icon phóng to (Expand)
+          svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />';
         }
       }
+    }
+
+    async function toggleFullscreen() {
+      if (isCurrentlyFullscreen()) {
+        // Đang toàn màn hình -> Thu nhỏ
+        document.body.classList.remove('pseudo-fullscreen');
+        const exitFn = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+        if (exitFn && (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement)) {
+          try {
+            await exitFn.call(document);
+          } catch (_) {}
+        }
+        updateFullscreenUI();
+      } else {
+        // Chưa toàn màn hình -> Phóng to
+        const docEl = document.documentElement;
+        const requestFn = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
+        
+        let nativeSuccess = false;
+        if (requestFn) {
+          try {
+            await requestFn.call(docEl);
+            nativeSuccess = true;
+          } catch (err) {
+            console.warn('[Live] Trình duyệt chặn Fullscreen API, chuyển sang chế độ giả lập Fullscreen:', err);
+          }
+        }
+
+        // Nếu Native API bị trình duyệt / iframe chặn, kích hoạt CSS Pseudo-Fullscreen
+        if (!nativeSuccess) {
+          document.body.classList.add('pseudo-fullscreen');
+        }
+        updateFullscreenUI();
+      }
+    }
+
+    btnFullscreen.addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleFullscreen();
     });
 
-    document.addEventListener('fullscreenchange', () => {
-      if (document.fullscreenElement) {
-        if (fullscreenBtnText) fullscreenBtnText.textContent = 'Thu nhỏ';
-      } else {
-        if (fullscreenBtnText) fullscreenBtnText.textContent = 'Toàn màn hình';
+    // Lắng nghe các sự kiện thay đổi toàn màn hình chuẩn & vendor prefixes
+    ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(evt => {
+      document.addEventListener(evt, updateFullscreenUI);
+    });
+
+    // Hỗ trợ phím ESC để thoát chế độ giả lập toàn màn hình
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.body.classList.contains('pseudo-fullscreen')) {
+        document.body.classList.remove('pseudo-fullscreen');
+        updateFullscreenUI();
       }
     });
   }

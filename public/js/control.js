@@ -221,13 +221,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 8. Xuất file CSV báo cáo kết quả
-  if (btnExportCsv) {
-    btnExportCsv.addEventListener('click', () => {
-      // Gọi trực tiếp URL tải file có xác thực cookie
-      window.location.href = '/api/control/export';
-    });
-  }
+  // 8. Nút xuất file CSV được thực thi thông qua thẻ <form action="/api/control/export" method="GET">
+  // Trình duyệt sẽ tự động kích hoạt tải xuống tệp đính kèm với đúng tên file và đuôi .csv chuẩn.
 
   // 9. Xử lý Danger Zone - Reset Data nhiều bước
   if (btnOpenResetModal) {

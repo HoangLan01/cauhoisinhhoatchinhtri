@@ -143,10 +143,10 @@ router.get('/stats', requireControlAuth, async (req, res, next) => {
 });
 
 /**
- * GET /api/control/export
+ * GET /api/control/export và /api/control/export.csv
  * Xuất dữ liệu kết quả bảng xếp hạng định dạng CSV kèm UTF-8 BOM
  */
-router.get('/export', requireControlAuth, async (req, res, next) => {
+router.get(['/export', '/export.csv'], requireControlAuth, async (req, res, next) => {
   try {
     const sql = `
       SELECT 
@@ -186,9 +186,12 @@ router.get('/export', requireControlAuth, async (req, res, next) => {
     const timestamp = now.toISOString().replace(/[-:T.]/g, '').slice(0, 14);
     const filename = `ket_qua_hoi_thi_tung_thien_${timestamp}.csv`;
 
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-    res.send(csv);
+    res.attachment(filename);
+    res.send(Buffer.from(csv, 'utf8'));
   } catch (err) {
     next(err);
   }

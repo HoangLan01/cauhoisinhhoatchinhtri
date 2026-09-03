@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const orgs = await ApiClient.get('/api/organizations');
       if (orgSelect && Array.isArray(orgs)) {
-        orgSelect.innerHTML = '<option value="">-- Chọn Đơn vị công tác / Chi bộ --</option>';
+        orgSelect.innerHTML = '<option value="">-- Chọn Đơn vị, phòng, ban --</option>';
         orgs.forEach((org) => {
           const opt = document.createElement('option');
           opt.value = org;
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       if (!organization) {
-        showError(orgSelect, orgError, 'Vui lòng chọn Đơn vị công tác / Chi bộ của bạn');
+        showError(orgSelect, orgError, 'Vui lòng chọn Đơn vị, phòng, ban của bạn');
         isValid = false;
       } else {
         clearError(orgSelect, orgError);

@@ -101,7 +101,7 @@ async function runTests() {
       method: 'POST',
       body: {
         fullName: 'Kiểm Thử Bảo Mật',
-        organization: 'Đoàn Thanh niên Cộng sản Hồ Chí Minh phường'
+        organization: 'Văn phòng HĐND và UBND'
       }
     });
 
@@ -126,7 +126,7 @@ async function runTests() {
       method: 'POST',
       body: {
         fullName: '<script>alert("hack")</script>',
-        organization: 'Đoàn Thanh niên Cộng sản Hồ Chí Minh phường'
+        organization: 'Văn phòng HĐND và UBND'
       }
     });
     assert.strictEqual(res.status, 400);

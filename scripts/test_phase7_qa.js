@@ -85,7 +85,7 @@ async function runTests() {
       method: 'POST',
       body: {
         fullName: 'Nguyễn Thị Quỳnh Như 🌟',
-        organization: 'Hội Liên hiệp Phụ nữ phường'
+        organization: 'Phòng Văn hóa - Xã hội'
       }
     });
     assert.strictEqual(res.status, 201);
@@ -99,7 +99,7 @@ async function runTests() {
       method: 'POST',
       body: {
         fullName: 'Thí Sinh Làm Dở',
-        organization: 'Đoàn Thanh niên Cộng sản Hồ Chí Minh phường'
+        organization: 'Văn phòng HĐND và UBND'
       }
     });
     assert.strictEqual(startRes.status, 201);
@@ -131,7 +131,7 @@ async function runTests() {
       method: 'POST',
       body: {
         fullName: 'Thí Sinh Nộp Muộn',
-        organization: 'Trường Tiểu học Tùng Thiện'
+        organization: 'Trạm Y tế'
       }
     });
     assert.strictEqual(startRes.status, 201);

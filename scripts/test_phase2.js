@@ -108,7 +108,7 @@ async function runTests() {
       method: 'POST',
       body: {
         fullName: 'Nguyễn Văn Kiểm Thử',
-        organization: 'Đoàn Thanh niên Cộng sản Hồ Chí Minh phường'
+        organization: 'Văn phòng HĐND và UBND'
       }
     });
     assert.strictEqual(res.status, 201);
@@ -195,8 +195,8 @@ async function runTests() {
     const startRes = await makeRequest('/api/start', {
       method: 'POST',
       body: {
-        fullName: 'Thí Sinh Race Condition',
-        organization: 'Công an phường Tùng Thiện'
+        fullName: 'Trần Văn Song Song',
+        organization: 'Trạm Y tế'
       }
     });
     assert.strictEqual(startRes.status, 201);

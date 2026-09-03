@@ -39,6 +39,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  let pollingTimer = null;
+
   async function fetchSystemStatus() {
     try {
       const res = await ApiClient.get('/api/status');
@@ -49,14 +51,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         stateBadge.className = `badge ${getStateBadgeClass(res.state)}`;
       }
 
-      if (res.state !== 'RUNNING') {
+      if (res.state === 'RUNNING') {
+        if (stateAlert) {
+          stateAlert.style.display = 'none';
+        }
+        if (btnStart && !btnStart.classList.contains('loading')) {
+          btnStart.disabled = false;
+          btnStart.textContent = 'Bắt đầu làm bài thi →';
+        }
+      } else {
         if (stateAlert) {
           stateAlert.style.display = 'block';
           if (stateAlertText) {
             stateAlertText.textContent = getStateAlertMessage(res.state);
           }
         }
-        if (btnStart) {
+        if (btnStart && !btnStart.classList.contains('loading')) {
           btnStart.disabled = true;
           btnStart.textContent = 'Cuộc thi tạm thời chưa mở';
         }
@@ -65,6 +75,31 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error('[App] Không thể tải trạng thái hệ thống:', err);
     }
   }
+
+  // 3. Cơ chế Smart Auto-Sync với Adaptive Jitter (3000ms ± 400ms) để làm phẳng lưu lượng
+  function scheduleNextPoll() {
+    if (pollingTimer) clearTimeout(pollingTimer);
+    // Khi người dùng ẩn tab/thu nhỏ: giãn cách 10s để tiết kiệm 100% băng thông; khi mở tab: 3s với jitter chống dồn sóng
+    const baseInterval = document.hidden ? 10000 : 3000;
+    const jitter = Math.floor(Math.random() * 800) - 400; // Phân bổ đều request, tránh thundering herd
+    const delay = Math.max(1500, baseInterval + jitter);
+
+    pollingTimer = setTimeout(async () => {
+      await fetchSystemStatus();
+      scheduleNextPoll();
+    }, delay);
+  }
+
+  // Khi thí sinh chuyển tab quay lại, kiểm tra ngay tức thì
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      fetchSystemStatus();
+      scheduleNextPoll();
+    }
+  });
+
+  // Bắt đầu vòng lặp đồng bộ tự động thông minh
+  scheduleNextPoll();
 
   async function fetchOrganizations() {
     try {

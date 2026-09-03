@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     qrContainer.innerHTML = `
-      <img src="/assets/icqr-tree.png?v=20250903_qr" alt="Mã QR tham gia Hội thi" class="qr-image-display" width="240" height="240" style="width: 240px; height: 240px; max-width: 100%; object-fit: contain; display: block; margin: 0 auto; border-radius: 8px;">
+      <img src="/assets/icqr-tree.png?v=20250903_v2" alt="Mã QR tham gia Hội thi" class="qr-image-display" width="260" height="260" style="width: 260px; height: 260px; max-width: 100%; object-fit: contain; display: block; margin: 0 auto; border-radius: 8px;">
     `;
   }
 

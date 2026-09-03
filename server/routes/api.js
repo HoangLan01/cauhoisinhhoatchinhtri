@@ -32,6 +32,9 @@ router.get('/organizations', (req, res) => {
  */
 router.get('/status', async (req, res, next) => {
   try {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     const stateInfo = await stateService.getQuizState();
     res.json({
       state: stateInfo.state,

@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function fetchSystemStatus() {
     try {
-      const res = await ApiClient.get('/api/status');
+      const res = await ApiClient.get(`/api/status?_t=${Date.now()}`);
       currentSystemState = res.state;
 
       if (stateBadge) {

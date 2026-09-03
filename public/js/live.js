@@ -52,23 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const qrDomainText = document.getElementById('qr-domain-text');
     if (!qrContainer) return;
 
-    // Luôn mã hóa đường link chính thức https://cau-hoi.phuongtungthien.vn để điện thoại quét qua 4G/Wifi vào thi được ngay
     const targetUrl = 'https://cau-hoi.phuongtungthien.vn';
 
     if (qrDomainText) {
       qrDomainText.textContent = targetUrl;
     }
 
-    if (window.QRCode) {
-      qrContainer.innerHTML = '';
-      qrCodeInstance = new window.QRCode(qrContainer, {
-        text: targetUrl,
-        width: 240,
-        height: 240,
-        colorDark: '#0f172a', // Màu tương phản cao, camera điện thoại và Zalo quét tức thì
-        colorLight: '#ffffff'
-      });
-    }
+    qrContainer.innerHTML = `
+      <img src="/assets/icqr-tree.png" alt="Mã QR tham gia Hội thi" class="qr-image-display" width="240" height="240" style="width: 240px; height: 240px; max-width: 100%; object-fit: contain; display: block; margin: 0 auto; border-radius: 8px;">
+    `;
   }
 
   // =========================================================================

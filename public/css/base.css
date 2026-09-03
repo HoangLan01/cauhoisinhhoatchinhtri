@@ -170,6 +170,17 @@ body {
   flex-shrink: 0;
 }
 
+.brand-logo-img {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: #fff;
+  box-shadow: var(--shadow-sm);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+}
+
 .brand-text h1 {
   font-size: var(--font-lg);
   font-weight: 700;

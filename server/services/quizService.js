@@ -480,7 +480,6 @@ async function getLiveDashboard() {
         submitted_at
       FROM attempts
       ORDER BY 
-        (status = 'SUBMITTED') DESC,
         COALESCE(score, current_score, 0) DESC,
         COALESCE(answered_count, 0) DESC,
         last_active_at ASC

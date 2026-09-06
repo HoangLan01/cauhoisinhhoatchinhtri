@@ -1,10 +1,11 @@
 /**
- * Quiz Script - Màn hình làm bài thi trắc nghiệm trực tuyến (quiz.html)
+ * Quiz Script - Màn hình làm bài thi trắc nghiệm trực tuyến 15 câu (quiz.html)
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
   let quizData = null;
   let timerInterval = null;
+  const TOTAL_DURATION_SECONDS = 10 * 60; // 10 phút = 600 giây
 
   // DOM Elements
   const candidateNameEl = document.getElementById('candidate-name');
@@ -72,6 +73,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
+      // Khôi phục câu trả lời từ server nếu có
+      if (serverAttempt.savedAnswers && typeof serverAttempt.savedAnswers === 'object') {
+        quizData.answers = Object.assign({}, serverAttempt.savedAnswers, quizData.answers);
+      }
+
       // Cập nhật lại danh sách câu hỏi nếu cần
       if (Array.isArray(serverAttempt.questions) && serverAttempt.questions.length > 0) {
         quizData.questions = serverAttempt.questions;
@@ -86,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (candidateNameEl) candidateNameEl.textContent = quizData.fullName || 'Thí sinh';
     if (candidateOrgEl) candidateOrgEl.textContent = `Đơn vị: ${quizData.organization || 'Chưa cập nhật'}`;
 
-    // Khởi động đồng hồ đếm thời gian
+    // Khởi động đồng hồ đếm thời gian (10 phút)
     startTimer(quizData.startedAt);
 
     // Khởi tạo bảng chọn nhanh câu hỏi (Question Grid)
@@ -107,7 +113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // 2. Đồng hồ đếm thời gian thực
+  // 2. Đồng hồ đếm thời gian thực (10 phút = 600 giây)
   function startTimer(startedAt) {
     if (timerInterval) clearInterval(timerInterval);
 
@@ -116,10 +122,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     function updateTimer() {
       const now = Date.now();
       const elapsedSeconds = Math.max(0, Math.floor((now - startTime) / 1000));
-      const mins = Math.floor(elapsedSeconds / 60);
-      const secs = elapsedSeconds % 60;
+      const remainingSeconds = Math.max(0, TOTAL_DURATION_SECONDS - elapsedSeconds);
+
+      const mins = Math.floor(remainingSeconds / 60);
+      const secs = remainingSeconds % 60;
       const formatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-      if (timerDisplay) timerDisplay.textContent = formatted;
+      
+      if (timerDisplay) {
+        timerDisplay.textContent = formatted;
+        if (remainingSeconds <= 60) {
+          timerDisplay.style.color = '#ef4444'; // Cảnh báo đỏ khi còn dưới 1 phút
+          timerDisplay.style.fontWeight = '800';
+        } else {
+          timerDisplay.style.color = '';
+          timerDisplay.style.fontWeight = '';
+        }
+      }
+
+      // Tự động nộp bài khi hết giờ
+      if (remainingSeconds <= 0) {
+        clearInterval(timerInterval);
+        alert('Đã hết 10 phút làm bài thi! Hệ thống sẽ tự động nộp bài.');
+        executeSubmit();
+      }
     }
 
     updateTimer();
@@ -169,7 +194,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (progressFill) progressFill.style.width = `${Math.max(5, percentage)}%`;
     if (progressText) {
-      progressText.innerHTML = `Đã làm: <strong>${answeredCount}</strong> / <strong>${total}</strong> câu (${percentage}%)`;
+      progressText.innerHTML = `Tiến độ: <strong>${answeredCount}</strong> / <strong>${total}</strong> câu (${percentage}%)`;
     }
   }
 
@@ -244,6 +269,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Cập nhật bảng Question Grid và thanh tiến độ
     renderQuestionGrid();
+
+    // Đồng bộ tiến độ ngầm lên Server phục vụ màn hình Đua Top Live
+    syncProgressWithServer(questionId, optionId);
+  }
+
+  // Đồng bộ ngầm tiến độ từng câu với server
+  function syncProgressWithServer(questionId, optionId) {
+    if (!quizData || !quizData.attemptId) return;
+    ApiClient.post('/api/progress', {
+      attemptId: quizData.attemptId,
+      questionId,
+      selected: optionId
+    }).catch((err) => {
+      console.warn('[Quiz] Đồng bộ tiến độ thời gian thực:', err.message);
+    });
   }
 
   // 5. Gắn các sự kiện chuyển câu & nộp bài
@@ -318,8 +358,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 7. Gửi nộp bài thi lên Backend
   async function executeSubmit() {
     try {
-      btnModalConfirm.classList.add('loading');
-      btnModalConfirm.disabled = true;
+      if (btnModalConfirm) {
+        btnModalConfirm.classList.add('loading');
+        btnModalConfirm.disabled = true;
+      }
       if (btnModalCancel) btnModalCancel.disabled = true;
 
       // Chuẩn bị payload dạng mảng [{ questionId, selected }]
@@ -342,8 +384,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       window.location.href = `/result.html?id=${quizData.attemptId}`;
     } catch (err) {
       console.error('[Quiz] Lỗi nộp bài thi:', err);
-      btnModalConfirm.classList.remove('loading');
-      btnModalConfirm.disabled = false;
+      if (btnModalConfirm) {
+        btnModalConfirm.classList.remove('loading');
+        btnModalConfirm.disabled = false;
+      }
       if (btnModalCancel) btnModalCancel.disabled = false;
 
       // Nếu bài thi đã được nộp trước đó

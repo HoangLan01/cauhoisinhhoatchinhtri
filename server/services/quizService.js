@@ -23,7 +23,7 @@ function isValidUUID(id) {
 }
 
 /**
- * Bắt đầu một lượt thi mới
+ * Bắt đầu một lượt thi mới (Khóa 01 người chỉ 01 lượt thi)
  */
 async function startAttempt({ fullName, organization, clientFingerprint = null }) {
   const stateInfo = await stateService.getQuizState();
@@ -63,10 +63,43 @@ async function startAttempt({ fullName, organization, clientFingerprint = null }
     throw err;
   }
 
+  // KHÓA 01 LẦN THI: Kiểm tra xem thí sinh (Họ tên + Đơn vị) đã từng đăng ký tham gia chưa
+  const checkDuplicateSql = `
+    SELECT id, full_name, organization, status, started_at
+    FROM attempts
+    WHERE LOWER(TRIM(full_name)) = LOWER(TRIM($1))
+      AND organization = $2
+    LIMIT 1;
+  `;
+  const dupRes = await db.query(checkDuplicateSql, [cleanName, cleanOrg]);
+
+  if (dupRes.rowCount > 0) {
+    const existing = dupRes.rows[0];
+    const isSubmitted = existing.status === 'SUBMITTED';
+    const msg = isSubmitted
+      ? `Thí sinh "${cleanName}" thuộc "${cleanOrg}" đã hoàn thành bài thi trước đó. Mỗi thí sinh chỉ được tham gia 01 lần duy nhất!`
+      : `Thí sinh "${cleanName}" thuộc "${cleanOrg}" đã có bài thi đang diễn ra. Mỗi thí sinh chỉ được tham gia 01 lần duy nhất!`;
+    
+    const err = new Error(msg);
+    err.status = 409; // Conflict
+    err.existingAttemptId = existing.id;
+    err.existingStatus = existing.status;
+    throw err;
+  }
+
   // Thêm mới lượt thi vào PostgreSQL với started_at do máy chủ xác định
   const insertSql = `
-    INSERT INTO attempts (full_name, organization, client_fingerprint, status, started_at)
-    VALUES ($1, $2, $3, 'IN_PROGRESS', CURRENT_TIMESTAMP)
+    INSERT INTO attempts (
+      full_name, 
+      organization, 
+      client_fingerprint, 
+      status, 
+      current_score, 
+      answered_count, 
+      last_active_at, 
+      started_at
+    )
+    VALUES ($1, $2, $3, 'IN_PROGRESS', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     RETURNING id, full_name, organization, started_at, status;
   `;
 
@@ -79,8 +112,111 @@ async function startAttempt({ fullName, organization, clientFingerprint = null }
     organization: row.organization,
     startedAt: row.started_at,
     totalQuestions: questionService.getTotalQuestionsCount(),
+    maxScore: questionService.getTotalQuestionsCount() * 10,
     questions: questionService.getSanitizedQuestions() // Tuyệt đối không chứa correct/explanation
   };
+}
+
+/**
+ * Cập nhật tiến độ từng câu hỏi trong lúc thi (Phục vụ bảng Đua Top Live thời gian thực)
+ */
+async function updateProgress({ attemptId, questionId, selectedOption }) {
+  if (!attemptId || !isValidUUID(attemptId)) {
+    const err = new Error('Mã lượt thi không hợp lệ (yêu cầu định dạng UUID)');
+    err.status = 400;
+    throw err;
+  }
+
+  const stateInfo = await stateService.getQuizState();
+  if (stateInfo.state !== 'RUNNING') {
+    const err = new Error(`Cuộc thi không ở trạng thái làm bài (Trạng thái: ${stateInfo.state})`);
+    err.status = 403;
+    throw err;
+  }
+
+  const qId = Number(questionId);
+  const targetQuestion = questionService.getQuestionById(qId);
+  if (!targetQuestion) {
+    const err = new Error('Câu hỏi không tồn tại trong hệ thống');
+    err.status = 400;
+    throw err;
+  }
+
+  const cleanOpt = selectedOption ? String(selectedOption).trim().toUpperCase() : null;
+
+  return await db.withTransaction(async (client) => {
+    const checkSql = `
+      SELECT id, full_name, organization, status, answers 
+      FROM attempts 
+      WHERE id = $1 
+      FOR UPDATE;
+    `;
+    const checkRes = await client.query(checkSql, [attemptId]);
+
+    if (checkRes.rowCount === 0) {
+      const err = new Error('Lượt thi không tồn tại');
+      err.status = 404;
+      throw err;
+    }
+
+    const attempt = checkRes.rows[0];
+    if (attempt.status === 'SUBMITTED') {
+      return { attemptId, status: 'SUBMITTED' };
+    }
+
+    let currentAnswers = attempt.answers || {};
+    if (typeof currentAnswers !== 'object' || Array.isArray(currentAnswers)) {
+      currentAnswers = {};
+    }
+
+    if (cleanOpt) {
+      currentAnswers[qId] = cleanOpt;
+    } else {
+      delete currentAnswers[qId];
+    }
+
+    // Tính toán lại điểm số tạm thời và số câu đã làm trên Server (bảo mật tuyệt đối)
+    let answeredCount = 0;
+    let currentScore = 0;
+
+    for (const [key, val] of Object.entries(currentAnswers)) {
+      const q = questionService.getQuestionById(Number(key));
+      if (q && val) {
+        answeredCount++;
+        if (val === q.correct) {
+          currentScore += 10;
+        }
+      }
+    }
+
+    const updateSql = `
+      UPDATE attempts
+      SET 
+        answers = $1,
+        answered_count = $2,
+        current_score = $3,
+        last_active_at = CURRENT_TIMESTAMP
+      WHERE id = $4
+      RETURNING id, answered_count, current_score;
+    `;
+
+    const updateRes = await client.query(updateSql, [
+      JSON.stringify(currentAnswers),
+      answeredCount,
+      currentScore,
+      attemptId
+    ]);
+
+    const updated = updateRes.rows[0];
+
+    return {
+      attemptId: updated.id,
+      answeredCount: updated.answered_count,
+      currentScore: updated.current_score,
+      totalQuestions: questionService.getTotalQuestionsCount(),
+      maxScore: questionService.getTotalQuestionsCount() * 10
+    };
+  });
 }
 
 /**
@@ -94,7 +230,7 @@ async function getAttempt(attemptId) {
   }
 
   const res = await db.query(
-    'SELECT id, full_name, organization, status, started_at, submitted_at, score, duration_ms FROM attempts WHERE id = $1;',
+    'SELECT id, full_name, organization, status, started_at, submitted_at, score, current_score, answered_count, duration_ms, answers FROM attempts WHERE id = $1;',
     [attemptId]
   );
 
@@ -116,6 +252,8 @@ async function getAttempt(attemptId) {
       startedAt: row.started_at,
       submittedAt: row.submitted_at,
       score: row.score,
+      maxScore: questionService.getTotalQuestionsCount() * 10,
+      totalQuestions: questionService.getTotalQuestionsCount(),
       durationMs: row.duration_ms,
       serverState: stateInfo.state
     };
@@ -128,7 +266,11 @@ async function getAttempt(attemptId) {
     organization: row.organization,
     startedAt: row.started_at,
     serverState: stateInfo.state,
+    currentScore: row.current_score || 0,
+    answeredCount: row.answered_count || 0,
+    savedAnswers: row.answers || {},
     totalQuestions: questionService.getTotalQuestionsCount(),
+    maxScore: questionService.getTotalQuestionsCount() * 10,
     questions: questionService.getSanitizedQuestions()
   };
 }
@@ -190,14 +332,18 @@ async function submitAttempt(attemptId, answers = {}) {
         status = 'SUBMITTED',
         submitted_at = CURRENT_TIMESTAMP,
         score = $1,
-        duration_ms = $2,
-        answers = $3
-      WHERE id = $4
+        current_score = $1,
+        answered_count = $2,
+        duration_ms = $3,
+        answers = $4,
+        last_active_at = CURRENT_TIMESTAMP
+      WHERE id = $5
       RETURNING id, full_name, organization, score, duration_ms, submitted_at, status;
     `;
 
     const updateRes = await client.query(updateSql, [
       evalResult.score,
+      evalResult.total,
       durationMs,
       JSON.stringify(evalResult.answersRecord),
       attemptId
@@ -210,7 +356,9 @@ async function submitAttempt(attemptId, answers = {}) {
       fullName: updatedRow.full_name,
       organization: updatedRow.organization,
       score: updatedRow.score,
+      correctCount: evalResult.correctCount,
       totalQuestions: evalResult.total,
+      maxScore: evalResult.maxScore,
       durationMs: Number(updatedRow.duration_ms),
       submittedAt: updatedRow.submitted_at,
       status: updatedRow.status
@@ -269,12 +417,15 @@ async function getAttemptResult(attemptId) {
   const countSql = `SELECT COUNT(*) AS total_completed FROM attempts WHERE status = 'SUBMITTED';`;
   const countRes = await db.query(countSql);
 
+  const totalQuestions = questionService.getTotalQuestionsCount();
+
   return {
     attemptId: attempt.id,
     fullName: attempt.full_name,
     organization: attempt.organization,
     score: attempt.score,
-    totalQuestions: questionService.getTotalQuestionsCount(),
+    maxScore: totalQuestions * 10,
+    totalQuestions: totalQuestions,
     durationMs: Number(attempt.duration_ms),
     rank: Number(rankRes.rows[0]?.rank || 1),
     totalCompleted: Number(countRes.rows[0]?.total_completed || 1),
@@ -284,7 +435,7 @@ async function getAttemptResult(attemptId) {
 }
 
 /**
- * Thống kê cho màn hình Live và Bảng xếp hạng Top 10
+ * Thống kê cho màn hình Live (Đua Top trong RUNNING và Vinh danh trong RESULT)
  */
 async function getLiveDashboard() {
   const stateInfo = await stateService.getQuizState();
@@ -304,32 +455,81 @@ async function getLiveDashboard() {
   const compCount = Number(completed) || 0;
   const playCount = Number(playing) || 0;
   const completionRate = regCount > 0 ? Number(((compCount / regCount) * 100).toFixed(1)) : 0;
+  const totalQuestions = questionService.getTotalQuestionsCount();
+  const maxScore = totalQuestions * 10;
 
-  // Lấy Top 10 bảng xếp hạng
-  const topSql = `
-    SELECT 
-      id,
-      full_name,
-      organization,
-      score,
-      duration_ms,
-      submitted_at
-    FROM attempts
-    WHERE status = 'SUBMITTED'
-    ORDER BY score DESC, duration_ms ASC, submitted_at ASC
-    LIMIT 10;
-  `;
-  const topRes = await db.query(topSql);
+  let top = [];
 
-  const top = topRes.rows.map((r, index) => ({
-    rank: index + 1,
-    id: r.id,
-    fullName: r.full_name,
-    organization: r.organization,
-    score: r.score,
-    durationMs: Number(r.duration_ms),
-    submittedAt: r.submitted_at
-  }));
+  if (stateInfo.state === 'RUNNING') {
+    // BẢNG ĐUA TOP THỜI GIAN THỰC (LIVE RACE):
+    // Ưu tiên:
+    // 1. status = 'SUBMITTED' trước
+    // 2. Điểm số cao hơn (score/current_score DESC)
+    // 3. Số câu đã làm nhiều hơn (answered_count DESC)
+    // 4. Thời gian đạt mốc điểm sớm hơn (last_active_at ASC)
+    const liveRaceSql = `
+      SELECT 
+        id,
+        full_name,
+        organization,
+        status,
+        COALESCE(score, current_score, 0) AS score,
+        COALESCE(answered_count, 0) AS answered_count,
+        duration_ms,
+        last_active_at,
+        submitted_at
+      FROM attempts
+      ORDER BY 
+        (status = 'SUBMITTED') DESC,
+        COALESCE(score, current_score, 0) DESC,
+        COALESCE(answered_count, 0) DESC,
+        last_active_at ASC
+      LIMIT 15;
+    `;
+    const liveRes = await db.query(liveRaceSql);
+
+    top = liveRes.rows.map((r, index) => ({
+      rank: index + 1,
+      id: r.id,
+      fullName: r.full_name,
+      organization: r.organization,
+      status: r.status,
+      score: Number(r.score) || 0,
+      answeredCount: Number(r.answered_count) || 0,
+      totalQuestions: totalQuestions,
+      maxScore: maxScore,
+      durationMs: r.duration_ms ? Number(r.duration_ms) : null,
+      submittedAt: r.submitted_at
+    }));
+  } else {
+    // BẢNG VINH DANH CHÍNH THỨC (RESULT / CLOSED)
+    const topSql = `
+      SELECT 
+        id,
+        full_name,
+        organization,
+        score,
+        duration_ms,
+        submitted_at
+      FROM attempts
+      WHERE status = 'SUBMITTED'
+      ORDER BY score DESC, duration_ms ASC, submitted_at ASC
+      LIMIT 10;
+    `;
+    const topRes = await db.query(topSql);
+
+    top = topRes.rows.map((r, index) => ({
+      rank: index + 1,
+      id: r.id,
+      fullName: r.full_name,
+      organization: r.organization,
+      score: Number(r.score) || 0,
+      totalQuestions: totalQuestions,
+      maxScore: maxScore,
+      durationMs: Number(r.duration_ms),
+      submittedAt: r.submitted_at
+    }));
+  }
 
   return {
     state: stateInfo.state,
@@ -338,12 +538,15 @@ async function getLiveDashboard() {
     playing: playCount,
     completed: compCount,
     completionRate,
+    totalQuestions,
+    maxScore,
     top
   };
 }
 
 module.exports = {
   startAttempt,
+  updateProgress,
   getAttempt,
   submitAttempt,
   getAttemptResult,

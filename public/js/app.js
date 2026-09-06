@@ -244,6 +244,26 @@ document.addEventListener('DOMContentLoaded', async () => {
       } catch (err) {
         btnStart.classList.remove('loading');
         btnStart.disabled = false;
+
+        if (err.status === 409) {
+          // Kiểm tra xem trên thiết bị có bài thi đang diễn ra không
+          try {
+            const savedRaw = localStorage.getItem('quiz_attempt');
+            if (savedRaw) {
+              const saved = JSON.parse(savedRaw);
+              if (saved && saved.attemptId && saved.status === 'IN_PROGRESS') {
+                if (confirm(`${err.message}\n\nBạn có muốn tiếp tục làm bài thi đang diễn ra trên thiết bị này không?`)) {
+                  window.location.href = '/quiz.html';
+                  return;
+                }
+              }
+            }
+          } catch (e) {}
+
+          alert(err.message || 'Thí sinh này đã tham gia dự thi. Mỗi thí sinh chỉ được làm bài 01 lần duy nhất!');
+          return;
+        }
+
         alert(err.message || 'Không thể bắt đầu lượt thi. Vui lòng thử lại.');
       }
     });

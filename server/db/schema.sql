@@ -32,15 +32,26 @@ CREATE TABLE IF NOT EXISTS attempts (
     status VARCHAR(50) NOT NULL DEFAULT 'IN_PROGRESS',
     answers JSONB NULL,
     client_fingerprint VARCHAR(255) NULL,
+    current_score INT NOT NULL DEFAULT 0,
+    answered_count INT NOT NULL DEFAULT 0,
+    last_active_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT chk_attempt_status CHECK (status IN ('IN_PROGRESS', 'SUBMITTED'))
 );
 
--- Chỉ mục tối ưu hóa truy vấn bảng xếp hạng (Leaderboard)
+-- Chỉ mục kiểm tra trùng lặp thí sinh (1 người chỉ 1 lượt thi)
+CREATE INDEX IF NOT EXISTS idx_attempts_candidate_unique 
+ON attempts (LOWER(TRIM(full_name)), organization);
+
+-- Chỉ mục tối ưu hóa truy vấn bảng xếp hạng chính thức (Leaderboard sau khi nộp bài)
 -- Tiêu chí: 1. Điểm cao nhất (score DESC) -> 2. Thời gian ngắn nhất (duration_ms ASC) -> 3. Nộp sớm nhất (submitted_at ASC)
 CREATE INDEX IF NOT EXISTS idx_attempts_leaderboard 
 ON attempts (score DESC, duration_ms ASC, submitted_at ASC) 
 WHERE status = 'SUBMITTED';
+
+-- Chỉ mục tối ưu hóa bảng Đua Top thời gian thực trong lúc thi (Live Race Leaderboard)
+CREATE INDEX IF NOT EXISTS idx_attempts_live_race
+ON attempts (status, current_score DESC, answered_count DESC, last_active_at ASC);
 
 -- Chỉ mục phụ trợ thống kê và tra cứu
 CREATE INDEX IF NOT EXISTS idx_attempts_status ON attempts (status);

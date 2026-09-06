@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const stateService = require('../services/stateService');
 const quizService = require('../services/quizService');
-const { startLimiter, submitLimiter, liveLimiter } = require('../middleware/rateLimiters');
+const { startLimiter, progressLimiter, submitLimiter, liveLimiter } = require('../middleware/rateLimiters');
 
 // Tải danh sách đơn vị công tác
 let organizationsList = [];
@@ -62,6 +62,24 @@ router.post('/start', startLimiter, async (req, res, next) => {
     });
 
     res.status(201).json(attempt);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * POST /api/progress
+ * Cập nhật tiến độ làm từng câu hỏi thời gian thực (phục vụ bảng Đua Top máy chiếu)
+ */
+router.post('/progress', progressLimiter, async (req, res, next) => {
+  try {
+    const { attemptId, questionId, selected } = req.body || {};
+    const progress = await quizService.updateProgress({
+      attemptId,
+      questionId,
+      selectedOption: selected
+    });
+    res.json(progress);
   } catch (err) {
     next(err);
   }

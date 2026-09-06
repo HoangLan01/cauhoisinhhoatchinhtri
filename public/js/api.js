@@ -1,6 +1,6 @@
 /**
  * API Helper Module - Phường Tùng Thiện Quiz
- * Hỗ trợ các thao tác fetch thống nhất, xử lý timeout và lỗi
+ * Hỗ trợ các thao tác fetch thống nhất, xử lý timeout, token và lỗi
  */
 
 const ApiClient = (() => {
@@ -27,13 +27,22 @@ const ApiClient = (() => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
+    // Tự động đính kèm token quản trị nếu có trong localStorage
+    const authHeaders = {};
+    const controlToken = localStorage.getItem('control_token');
+    if (controlToken) {
+      authHeaders['Authorization'] = `Bearer ${controlToken}`;
+    }
+
     const config = {
       method,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        ...authHeaders,
         ...headers
       },
+      credentials: 'include',
       signal: controller.signal,
       ...customOptions
     };

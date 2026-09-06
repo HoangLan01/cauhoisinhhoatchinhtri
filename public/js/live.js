@@ -264,6 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rateEl = document.getElementById('stat-rate');
     const fillEl = document.getElementById('giant-progress-fill');
     const percentEl = document.getElementById('giant-progress-percent');
+    const raceGrid = document.getElementById('live-race-grid');
 
     if (regEl) regEl.textContent = data.registered || 0;
     if (playEl) playEl.textContent = data.playing || 0;
@@ -272,6 +273,76 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (fillEl) fillEl.style.width = `${Math.min(100, Math.max(0, data.completionRate || 0))}%`;
     if (percentEl) percentEl.textContent = `${data.completionRate || 0}%`;
+
+    // Render Bảng Đua Top thời gian thực
+    if (raceGrid) {
+      const topList = Array.isArray(data.top) ? data.top : [];
+      const totalQ = data.totalQuestions || 15;
+      const maxSc = data.maxScore || 150;
+
+      if (topList.length === 0) {
+        raceGrid.innerHTML = `
+          <div class="live-race-empty" id="live-race-empty">
+            <div class="empty-spinner"></div>
+            <p>Các thí sinh đang bắt đầu làm bài thi. Bảng xếp hạng đua top sẽ nhảy số ngay khi có câu trả lời đầu tiên...</p>
+          </div>
+        `;
+      } else {
+        raceGrid.innerHTML = '';
+        topList.slice(0, 10).forEach((item, index) => {
+          const rankNum = index + 1;
+          const card = document.createElement('div');
+          let rankClass = `rank-${rankNum}`;
+          if (rankNum > 3) rankClass = 'rank-other-card';
+
+          let medalHtml = '';
+          if (rankNum === 1) {
+            medalHtml = '🥇 1';
+          } else if (rankNum === 2) {
+            medalHtml = '🥈 2';
+          } else if (rankNum === 3) {
+            medalHtml = '🥉 3';
+          } else {
+            medalHtml = `<span class="racer-rank-badge rank-other">${rankNum}</span>`;
+          }
+
+          const isSubmitted = item.status === 'SUBMITTED';
+          const answeredCount = item.answeredCount || 0;
+          const progressPercent = Math.min(100, Math.round((answeredCount / totalQ) * 100));
+
+          const statusHtml = isSubmitted
+            ? `<span class="racer-status-tag submitted">Đã nộp bài ✓</span>`
+            : `<span class="racer-status-tag playing">Câu ${Math.min(totalQ, answeredCount + 1)}</span>`;
+
+          const initials = getInitials(item.fullName);
+          const avatarColor = getAvatarColor(item.organization);
+
+          card.className = `racer-card ${rankClass}`;
+          card.innerHTML = `
+            <div class="racer-rank-badge ${rankNum <= 3 ? 'rank-' + rankNum : ''}">${medalHtml}</div>
+            <div class="racer-avatar" style="background: ${avatarColor};">${initials}</div>
+            <div class="racer-info">
+              <div class="racer-name">${escapeHtml(item.fullName)}</div>
+              <div class="racer-org">${escapeHtml(item.organization)}</div>
+            </div>
+            <div class="racer-progress-section">
+              <div class="racer-status-row">
+                ${statusHtml}
+                <span class="racer-count-text">${answeredCount}/${totalQ}</span>
+              </div>
+              <div class="racer-mini-bar-track">
+                <div class="racer-mini-bar-fill" style="width: ${progressPercent}%;"></div>
+              </div>
+            </div>
+            <div class="racer-score-box">
+              <div class="racer-score-num">${item.score}</div>
+              <span class="racer-score-sub">/${maxSc} đ</span>
+            </div>
+          `;
+          raceGrid.appendChild(card);
+        });
+      }
+    }
   }
 
   // View CLOSED
@@ -287,6 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const podiumContainer = document.getElementById('podium-container');
     const tableBody = document.getElementById('leaderboard-table-body');
     const topList = Array.isArray(data.top) ? data.top : [];
+    const maxSc = data.maxScore || 150;
 
     // Tách Top 3 và Ranks 4-10
     const top3 = topList.slice(0, 3);
@@ -329,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div class="podium-name">${escapeHtml(item.fullName)}</div>
           <div class="podium-org">${escapeHtml(item.organization)}</div>
-          <div class="podium-score">${item.score} <span style="font-size: 1rem; color: var(--text-muted);">/ 20</span></div>
+          <div class="podium-score">${item.score} <span style="font-size: 1rem; color: var(--text-muted);">/ ${maxSc} đ</span></div>
           <div class="podium-duration">Thời gian: ${formatDuration(item.durationMs)}</div>
         `;
         podiumContainer.appendChild(card);
@@ -359,12 +431,38 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
           <td><strong>${escapeHtml(item.fullName)}</strong></td>
           <td>${escapeHtml(item.organization)}</td>
-          <td style="text-align: center;" class="score-cell">${item.score} / 20</td>
+          <td style="text-align: center;" class="score-cell">${item.score} / ${maxSc} đ</td>
           <td style="text-align: right;" class="duration-cell">${formatDuration(item.durationMs)}</td>
         `;
         tableBody.appendChild(tr);
       });
     }
+  }
+
+  function getInitials(fullName) {
+    if (!fullName) return 'TS';
+    const parts = fullName.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+
+  function getAvatarColor(orgName) {
+    const colors = [
+      'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+      'linear-gradient(135deg, #10b981, #047857)',
+      'linear-gradient(135deg, #f59e0b, #b45309)',
+      'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+      'linear-gradient(135deg, #ec4899, #be185d)',
+      'linear-gradient(135deg, #06b6d4, #0e7490)',
+      'linear-gradient(135deg, #b91c1c, #991b1b)'
+    ];
+    if (!orgName) return colors[0];
+    let hash = 0;
+    for (let i = 0; i < orgName.length; i++) {
+      hash = orgName.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % colors.length;
+    return colors[index];
   }
 
   function formatDuration(durationMs) {

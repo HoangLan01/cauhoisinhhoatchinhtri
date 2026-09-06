@@ -124,6 +124,7 @@ function evaluateAnswers(userAnswers = []) {
     throw new Error('Định dạng danh sách câu trả lời không hợp lệ (phải là Array)');
   }
 
+  let correctCount = 0;
   let score = 0;
   const answersRecord = [];
   const processedQuestions = new Set();
@@ -143,7 +144,8 @@ function evaluateAnswers(userAnswers = []) {
     const isCorrect = selectedOpt === question.correct;
 
     if (isCorrect) {
-      score += 1;
+      correctCount += 1;
+      score += 10;
     }
 
     answersRecord.push({
@@ -155,7 +157,9 @@ function evaluateAnswers(userAnswers = []) {
 
   return {
     score,
+    correctCount,
     total: cachedQuestions.length,
+    maxScore: cachedQuestions.length * 10,
     answersRecord
   };
 }

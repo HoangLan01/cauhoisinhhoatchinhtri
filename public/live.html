@@ -137,10 +137,27 @@
           </div>
         </div>
 
-        <!-- Khung giữ nhiệt & bảo mật bảng xếp hạng trong lúc thi -->
-        <div class="running-teaser-box">
-          <h3>HỘI THI ĐANG DIỄN RA SÔI NỔI</h3>
-          <p>Bảng xếp hạng Top 10 xuất sắc nhất sẽ được vinh danh trang trọng ngay sau khi Ban Tổ chức đóng nhận bài thi.</p>
+        <!-- Bảng Đua Top Thời Gian Thực (Live Race Leaderboard) -->
+        <div class="live-race-card">
+          <div class="live-race-header">
+            <div class="live-race-title-group">
+              <span class="live-race-badge-pulse">
+                <span class="live-pulse-dot"></span> ĐUA TOP TRỰC TIẾP
+              </span>
+              <span class="live-race-subtitle">Cập nhật điểm số và tiến độ thời gian thực của thí sinh</span>
+            </div>
+            <div class="live-race-counter">
+              <span>BẢNG TOP 10 DẪN ĐẦU</span>
+            </div>
+          </div>
+
+          <!-- Container danh sách Top 10 thí sinh đua top -->
+          <div class="live-race-grid" id="live-race-grid">
+            <div class="live-race-empty" id="live-race-empty">
+              <div class="empty-spinner"></div>
+              <p>Các thí sinh đang bắt đầu làm bài thi. Bảng xếp hạng đua top sẽ nhảy số ngay khi có câu trả lời đầu tiên...</p>
+            </div>
+          </div>
         </div>
       </section>
 

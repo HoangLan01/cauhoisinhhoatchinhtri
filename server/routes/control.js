@@ -105,6 +105,7 @@ router.post('/state', requireControlAuth, async (req, res, next) => {
 router.get('/stats', requireControlAuth, async (req, res, next) => {
   try {
     const stateInfo = await stateService.getQuizState();
+    const maxPossibleScore = questionService.getTotalQuestionsCount() * 10;
 
     const statsSql = `
       SELECT 
@@ -113,12 +114,12 @@ router.get('/stats', requireControlAuth, async (req, res, next) => {
         COUNT(*) FILTER (WHERE status = 'IN_PROGRESS') AS playing,
         ROUND(AVG(score) FILTER (WHERE status = 'SUBMITTED'), 1) AS avg_score,
         MAX(score) FILTER (WHERE status = 'SUBMITTED') AS max_score,
-        COUNT(*) FILTER (WHERE status = 'SUBMITTED' AND score = 20) AS perfect_score_count,
+        COUNT(*) FILTER (WHERE status = 'SUBMITTED' AND score = $1) AS perfect_score_count,
         ROUND(AVG(duration_ms) FILTER (WHERE status = 'SUBMITTED')) AS avg_duration_ms
       FROM attempts;
     `;
 
-    const statsRes = await db.query(statsSql);
+    const statsRes = await db.query(statsSql, [maxPossibleScore]);
     const row = statsRes.rows[0];
 
     const reg = Number(row.registered) || 0;

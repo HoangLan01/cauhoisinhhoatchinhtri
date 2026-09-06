@@ -24,6 +24,22 @@ const startLimiter = rateLimit({
 });
 
 /**
+ * Rate limiter cho API cập nhật tiến độ chọn câu (/api/progress)
+ * Giới hạn: tối đa 120 request / phút / IP
+ */
+const progressLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 phút
+  max: 120,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: skipIfLoadTest,
+  message: {
+    error: 'Thao tác chọn câu quá nhanh.',
+    code: 'RATE_LIMIT_PROGRESS'
+  }
+});
+
+/**
  * Rate limiter cho API nộp bài thi (/api/submit)
  * Giới hạn: tối đa 10 lượt submit / phút / IP
  */
@@ -57,6 +73,7 @@ const liveLimiter = rateLimit({
 
 module.exports = {
   startLimiter,
+  progressLimiter,
   submitLimiter,
   liveLimiter,
   LOAD_TEST_SECRET

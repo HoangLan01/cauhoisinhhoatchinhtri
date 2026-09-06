@@ -306,24 +306,314 @@ body.pseudo-fullscreen {
   border-radius: var(--radius-full);
 }
 
-.running-teaser-box {
-  background: linear-gradient(135deg, #fef2f2, #fffbeb);
-  border: 1.5px dashed #fca5a5;
-  border-radius: var(--radius-lg);
+/* ==========================================================================
+   BẢNG ĐUA TOP THỜI GIAN THỰC (LIVE RACE LEADERBOARD - KAHOOT/QUIZIZZ STYLE)
+   ========================================================================== */
+.live-race-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
   padding: var(--space-6);
-  text-align: center;
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-6);
 }
 
-.running-teaser-box h3 {
-  color: var(--primary);
-  font-size: var(--font-xl);
+.live-race-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  border-bottom: 1.5px solid var(--border-color);
+}
+
+.live-race-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.live-race-badge-pulse {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  font-size: 0.85rem;
   font-weight: 800;
-  margin-bottom: var(--space-2);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.04em;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
 }
 
-.running-teaser-box p {
+.live-pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  animation: pulse-ring 1.2s infinite;
+}
+
+.live-race-subtitle {
+  font-size: var(--font-sm);
   color: var(--text-muted);
-  font-size: var(--font-base);
+  font-weight: 500;
+}
+
+.live-race-counter {
+  background: var(--bg-subtle);
+  color: var(--primary);
+  font-size: var(--font-xs);
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  letter-spacing: 0.05em;
+}
+
+.live-race-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: var(--space-4);
+}
+
+.live-race-empty {
+  grid-column: 1 / -1;
+  padding: var(--space-10) var(--space-4);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.empty-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(185, 28, 28, 0.15);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  margin: 0 auto var(--space-4);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Thẻ Thí sinh Đua Top (Racer Card) */
+.racer-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  padding: 10px 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.racer-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Rank 1 Highlight */
+.racer-card.rank-1 {
+  border-color: #f59e0b;
+  background: linear-gradient(135deg, #fffdf0, #ffffff);
+  box-shadow: 0 3px 12px rgba(245, 158, 11, 0.18);
+}
+
+.racer-card.rank-1::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: #f59e0b;
+}
+
+/* Rank 2 Highlight */
+.racer-card.rank-2 {
+  border-color: #94a3b8;
+  background: linear-gradient(135deg, #f8fafc, #ffffff);
+  box-shadow: 0 2px 8px rgba(148, 163, 184, 0.15);
+}
+
+.racer-card.rank-2::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: #94a3b8;
+}
+
+/* Rank 3 Highlight */
+.racer-card.rank-3 {
+  border-color: #d97706;
+  background: linear-gradient(135deg, #fffbf0, #ffffff);
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.12);
+}
+
+.racer-card.rank-3::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: #d97706;
+}
+
+/* Racer Rank Badge */
+.racer-rank-badge {
+  font-size: 1.1rem;
+  font-weight: 900;
+  min-width: 32px;
+  text-align: center;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.racer-rank-badge.rank-other {
+  width: 28px;
+  height: 28px;
+  background: #f1f5f9;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border: 1px solid #cbd5e1;
+}
+
+/* Racer Avatar */
+.racer-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Racer Main Info */
+.racer-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.racer-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.racer-org {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Racer Progress */
+.racer-progress-section {
+  width: 110px;
+  flex-shrink: 0;
+}
+
+.racer-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3px;
+}
+
+.racer-status-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.racer-status-tag.playing {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.racer-status-tag.submitted {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.racer-count-text {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.racer-mini-bar-track {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.racer-mini-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #10b981);
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+/* Racer Score Box */
+.racer-score-box {
+  text-align: right;
+  min-width: 65px;
+  flex-shrink: 0;
+}
+
+.racer-score-num {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--primary);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.racer-score-sub {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  display: block;
+  margin-top: 2px;
+}
+
+@media (max-width: 1024px) {
+  .live-race-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ==========================================================================

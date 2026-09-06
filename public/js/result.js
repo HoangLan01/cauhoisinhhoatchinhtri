@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (nameEl) nameEl.textContent = result.fullName || 'Thí sinh';
     if (orgEl) orgEl.textContent = result.organization || 'Chưa cập nhật';
-    if (scoreEl) scoreEl.textContent = result.score;
-    if (totalEl) totalEl.textContent = result.totalQuestions || 20;
+    if (scoreEl) scoreEl.textContent = result.score !== undefined ? result.score : '--';
+    if (totalEl) totalEl.textContent = result.maxScore || (result.totalQuestions ? result.totalQuestions * 10 : 150);
     if (rankEl) rankEl.textContent = result.rank;
     if (completedCountEl) completedCountEl.textContent = result.totalCompleted;
 

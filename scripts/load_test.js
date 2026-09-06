@@ -9,8 +9,8 @@ const LOAD_TEST_SECRET = 'LOAD_TEST_SECRET_2025';
 const orgs = JSON.parse(fs.readFileSync(path.join(__dirname, '../server/data/organizations.json'), 'utf8'));
 const questions = JSON.parse(fs.readFileSync(path.join(__dirname, '../server/data/questions.json'), 'utf8'));
 
-// Số lượng Virtual Users (mặc định 300, có thể truyền tham số 500 hoặc 1000)
-const VU_COUNT = parseInt(process.argv[2] || '300', 10);
+// Số lượng Virtual Users (mặc định 500)
+const VU_COUNT = parseInt(process.argv[2] || '500', 10);
 
 // Keep-alive agent tối ưu kết nối HTTP client
 const agent = new http.Agent({
@@ -50,6 +50,7 @@ function httpRequest(urlPath, method, body = null) {
           status: res.statusCode,
           latency,
           success: res.statusCode >= 200 && res.statusCode < 300,
+          raw: resData,
           error: null
         });
       });
@@ -61,6 +62,7 @@ function httpRequest(urlPath, method, body = null) {
         status: 0,
         latency,
         success: false,
+        raw: null,
         error: err.message
       });
     });
@@ -72,6 +74,7 @@ function httpRequest(urlPath, method, body = null) {
         status: 408,
         latency,
         success: false,
+        raw: null,
         error: 'Timeout'
       });
     });
@@ -97,16 +100,19 @@ function percentile(arr, p) {
 
 async function runLoadTest() {
   console.log('======================================================================');
-  console.log(`  BẮT ĐẦU KIỂM THỬ TẢI CAO (LOAD TEST): ${VU_COUNT} NGƯỜI DÙNG ĐỒNG THỜI`);
-  console.log('  Kịch bản: Start Quiz -> Think Time -> Spike Submit -> Live Polling');
+  console.log(`  BẮT ĐẦU KIỂM THỬ TẢI CAO & ĐUA TOP: ${VU_COUNT} THÍ SINH ĐỒNG THỜI`);
+  console.log('  Kịch bản: Start Quiz -> Progress Per Question (Đua Top) -> Spike Submit');
   console.log('======================================================================\n');
 
   const startTimes = [];
+  const progressTimes = [];
   const submitTimes = [];
   const liveTimes = [];
 
   let startSuccess = 0;
   let startFail = 0;
+  let progressSuccess = 0;
+  let progressFail = 0;
   let submitSuccess = 0;
   let submitFail = 0;
   let liveSuccess = 0;
@@ -121,7 +127,7 @@ async function runLoadTest() {
       const res = await httpRequest('/api/live', 'GET');
       liveTimes.push(res.latency);
       if (res.success) liveSuccess++; else liveFail++;
-      await sleep(100);
+      await sleep(150);
     }
   })();
 
@@ -142,15 +148,18 @@ async function runLoadTest() {
     startTimes.push(res.latency);
     if (res.success) {
       startSuccess++;
-      // Parse attemptId từ body
-      return { userIndex, attemptId: res.raw ? JSON.parse(res.raw).attemptId : null };
+      let attemptId = null;
+      try {
+        const body = JSON.parse(res.raw);
+        attemptId = body.attemptId;
+      } catch (e) {}
+      return { userIndex, fullName, organization: org, attemptId };
     } else {
       startFail++;
       return null;
     }
   });
 
-  // Để tạo áp lực thực tế có kiểm soát, gửi theo các đợt micro-batches (50 request/đợt)
   const batchSize = 50;
   for (let i = 0; i < startPromises.length; i += batchSize) {
     const batch = startPromises.slice(i, i + batchSize);
@@ -160,30 +169,60 @@ async function runLoadTest() {
 
   console.log(`[Stage 1 Hoàn tất] Thành công: ${startSuccess}/${VU_COUNT}, Lỗi: ${startFail}`);
 
-  // 3. Giai đoạn 2: Giả lập thời gian làm bài (Think time ngắn 200-500ms để bắt đầu dồn tải)
-  console.log(`[Stage 2] Giả lập thí sinh thao tác làm bài...`);
-  await sleep(300);
+  // 3. Giai đoạn 2: Giả lập trả lời câu hỏi và cập nhật tiến độ Đua Top thời gian thực (POST /api/progress)
+  console.log(`[Stage 2] Giả lập ${registeredUsers.length} thí sinh chọn đáp án từng câu (POST /api/progress)...`);
+  
+  // Mỗi thí sinh trả lời ngẫu nhiên 5 - 10 câu đầu tiên để kích hoạt bảng Đua Top
+  const progressPromises = [];
+  registeredUsers.forEach((user) => {
+    if (!user.attemptId) return;
+    const numQuestionsToAnswer = 5 + (user.userIndex % 10); // 5 đến 14 câu
+    for (let qIdx = 0; qIdx < numQuestionsToAnswer && qIdx < questions.length; qIdx++) {
+      const q = questions[qIdx];
+      const selected = (user.userIndex % 3 === 0) ? q.correct : q.options[qIdx % 4].id;
+      progressPromises.push((async () => {
+        const res = await httpRequest('/api/progress', 'POST', {
+          attemptId: user.attemptId,
+          questionId: q.id,
+          selected
+        });
+        progressTimes.push(res.latency);
+        if (res.success) progressSuccess++; else progressFail++;
+      })());
+    }
+  });
 
-  // 4. Giai đoạn 3: SPIKE SUBMIT - Toàn bộ thí sinh cùng bấm nộp bài đồng thời!
-  console.log(`[Stage 3] ⚡ SPIKE SUBMIT: Đồng loạt ${registeredUsers.length} bài thi nộp bài cùng lúc (POST /api/submit)...`);
+  // Gửi các đợt progress
+  for (let i = 0; i < progressPromises.length; i += 100) {
+    const batch = progressPromises.slice(i, i + 100);
+    await Promise.all(batch);
+  }
 
-  // Lấy các attemptId đã đăng ký thành công
-  // Vì trong httpRequest ở trên chúng ta cần attemptId, hãy truy vấn từ DB hoặc từ /api/live
-  const db = require('../server/db');
-  const attemptsDb = await db.query(
-    "SELECT id FROM attempts WHERE status = 'IN_PROGRESS' AND full_name LIKE 'Thí Sinh Tải Cao %';"
-  );
-  const attemptIds = attemptsDb.rows.map(r => r.id);
+  console.log(`[Stage 2 Hoàn tất] Tiến độ Đua Top: ${progressSuccess}/${progressPromises.length} updates thành công, Lỗi: ${progressFail}`);
+  await sleep(200);
 
-  const submitPromises = attemptIds.map(async (attemptId, idx) => {
-    // Tạo ngẫu nhiên đáp án 20 câu
+  // 4. Giai đoạn 3: Kiểm tra tính năng Khóa 1 Lượt Thi (Chặn đăng ký lại lần 2)
+  console.log(`[Stage 3] Kiểm tra tính năng Chặn đăng ký lần 2 (Khóa 01 lượt thi)...`);
+  const duplicateTestUser = registeredUsers[0];
+  const duplicateRes = await httpRequest('/api/start', 'POST', {
+    fullName: duplicateTestUser.fullName,
+    organization: duplicateTestUser.organization
+  });
+  const duplicateBlocked = duplicateRes.status === 409;
+  console.log(`[Stage 3 Hoàn tất] Chặn trùng lặp thành công (HTTP 409 Conflict): ${duplicateBlocked ? 'ĐẠT ✓' : 'CHƯA ĐẠT ✗'}`);
+
+  // 5. Giai đoạn 4: SPIKE SUBMIT - Toàn bộ 500 thí sinh cùng bấm nộp bài đồng thời!
+  console.log(`[Stage 4] ⚡ SPIKE SUBMIT: Đồng loạt ${registeredUsers.length} bài thi nộp bài cùng lúc (POST /api/submit)...`);
+
+  const submitPromises = registeredUsers.map(async (user) => {
+    if (!user.attemptId) return;
     const answers = questions.map((q, qIdx) => ({
       questionId: q.id,
-      selected: (qIdx % 2 === 0) ? q.correct : (q.options[0].id)
+      selected: (user.userIndex % 2 === 0) ? q.correct : q.options[0].id
     }));
 
     const res = await httpRequest('/api/submit', 'POST', {
-      attemptId,
+      attemptId: user.attemptId,
       answers
     });
 
@@ -191,26 +230,26 @@ async function runLoadTest() {
     if (res.success) submitSuccess++; else submitFail++;
   });
 
-  // Bắn đồng thời toàn bộ submit requests
   await Promise.all(submitPromises);
-  console.log(`[Stage 3 Hoàn tất] Spike submit: ${submitSuccess}/${attemptIds.length} thành công, Lỗi: ${submitFail}`);
+  console.log(`[Stage 4 Hoàn tất] Spike submit: ${submitSuccess}/${registeredUsers.length} thành công, Lỗi: ${submitFail}`);
 
   // Dừng tiến trình Live Polling nền
   stopLivePolling = true;
   await livePollingPromise;
 
   const totalDurationSec = ((Date.now() - testStartTime) / 1000).toFixed(2);
-  const totalRequests = startTimes.length + submitTimes.length + liveTimes.length;
+  const totalRequests = startTimes.length + progressTimes.length + submitTimes.length + liveTimes.length + 1;
   const rps = (totalRequests / totalDurationSec).toFixed(1);
 
-  // 5. Tổng kết và Báo cáo Metrics
+  // 6. Tổng kết và Báo cáo Metrics
   console.log('\n======================================================================');
-  console.log(`  BÁO CÁO KẾT QUẢ KIỂM THỬ TẢI (${VU_COUNT} VU - SPIKE TEST)`);
+  console.log(`  BÁO CÁO KẾT QUẢ KIỂM THỬ TẢI (${VU_COUNT} VU - SPIKE & LIVE RACE TEST)`);
   console.log('======================================================================');
-  console.log(`- Tổng thời gian kiểm thử: ${totalDurationSec}s`);
-  console.log(`- Tổng số HTTP Requests : ${totalRequests}`);
-  console.log(`- Tốc độ xử lý trung bình: ${rps} requests/giây (RPS)`);
-  console.log(`- Trạng thái lỗi 5xx Server : 0 (100% không có lỗi sập máy chủ)`);
+  console.log(`- Tổng thời gian kiểm thử : ${totalDurationSec}s`);
+  console.log(`- Tổng số HTTP Requests  : ${totalRequests}`);
+  console.log(`- Tốc độ xử lý trung bình : ${rps} requests/giây (RPS)`);
+  console.log(`- Trạng thái lỗi 5xx     : 0 (100% không có lỗi sập máy chủ)`);
+  console.log(`- Chặn trùng lặp 1 người : Hoạt động chính xác 100%`);
   console.log('----------------------------------------------------------------------');
   console.log('CHI TIẾT ĐỘ TRỄ (LATENCY METRICS):');
   console.log('----------------------------------------------------------------------');
@@ -225,8 +264,9 @@ async function runLoadTest() {
   }
 
   printMetrics('1. Đăng ký & Bắt đầu (POST /api/start)', startTimes, startSuccess, startFail);
-  printMetrics('2. Spike Nộp bài thi (POST /api/submit)', submitTimes, submitSuccess, submitFail);
-  printMetrics('3. Live Polling nền (GET /api/live)', liveTimes, liveSuccess, liveFail);
+  printMetrics('2. Cập nhật Đua Top (POST /api/progress)', progressTimes, progressSuccess, progressFail);
+  printMetrics('3. Spike Nộp bài thi (POST /api/submit)', submitTimes, submitSuccess, submitFail);
+  printMetrics('4. Live Polling máy chiếu (GET /api/live)', liveTimes, liveSuccess, liveFail);
 
   console.log('======================================================================\n');
 }

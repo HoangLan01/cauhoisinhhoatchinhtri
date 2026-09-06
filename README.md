@@ -87,12 +87,29 @@ Mặc định máy chủ sẽ lắng nghe tại:
 
 ## 4. Các giai đoạn triển khai (Phases)
 
-1. **Phase 01**: Khởi tạo kiến trúc và project skeleton (Đang hoàn thành).
+1. **Phase 01**: Khởi tạo kiến trúc và project skeleton.
 2. **Phase 02**: PostgreSQL + Backend nghiệp vụ Quiz (Tính điểm, thời gian, state).
 3. **Phase 03**: Giao diện người chơi hoàn chỉnh (Validation, bảo vệ lượt nộp).
-4. **Phase 04**: Màn hình Live máy chiếu hội trường 16:9 (Top 10, Auto-refresh/SSE).
+4. **Phase 04**: Màn hình Live máy chiếu hội trường 16:9 (Bảng Đua top Realtime & Bục vinh danh).
 5. **Phase 05**: Bảng điều khiển Control Panel có xác thực.
 6. **Phase 06**: Tối ưu bảo mật, chống gian lận & rate limiting.
 7. **Phase 07**: Kiểm thử tải 300–500 CCU & QA.
 8. **Phase 08**: Triển khai VPS production (Nginx, PM2, SSL Let's Encrypt).
 9. **Phase 09**: Nghiệm thu và bàn giao hệ thống.
+
+---
+
+## 5. Lệnh Cập nhật (Deploy) & Quản trị trên VPS
+
+Khi SSH vào VPS bằng user `root`, chạy lệnh 1-line duy nhất sau để cập nhật mã nguồn và reload ứng dụng dưới user `quizapp`:
+
+```bash
+su - quizapp -c "cd /var/www/quiz-tung-thien && git pull origin main && pm2 reload quiz-tung-thien"
+```
+
+### Các lệnh hữu ích khác:
+- **Xem trạng thái tiến trình**: `su - quizapp -c "pm2 status"`
+- **Xem logs thời gian thực**: `su - quizapp -c "pm2 logs quiz-tung-thien --lines 50"`
+- **Khởi động lại tiến trình**: `su - quizapp -c "pm2 restart quiz-tung-thien"`
+- **Kiểm tra Health Check**: `curl -I http://127.0.0.1:3000/health`
+

@@ -147,13 +147,34 @@ Test:
 - mobile browser
 
 ## 12. Operational commands
-Ghi vào README:
-- xem log
-- restart app
-- backup DB
-- restore
-- deploy update an toàn
-- rollback source version
+
+### Lệnh cập nhật (Deploy Update 1-line chuẩn)
+Khi SSH với user `root`, chạy 1 lệnh duy nhất để kéo code và reload PM2 dưới user `quizapp`:
+```bash
+su - quizapp -c "cd /var/www/quiz-tung-thien && git pull origin main && pm2 reload quiz-tung-thien"
+```
+
+### Các lệnh quản trị thường dùng khác:
+- **Xem trạng thái PM2**:
+  ```bash
+  su - quizapp -c "pm2 status"
+  ```
+- **Xem logs thời gian thực**:
+  ```bash
+  su - quizapp -c "pm2 logs quiz-tung-thien --lines 50"
+  ```
+- **Khởi động lại ứng dụng**:
+  ```bash
+  su - quizapp -c "pm2 restart quiz-tung-thien"
+  ```
+- **Kiểm tra Health Check**:
+  ```bash
+  curl -I http://127.0.0.1:3000/health
+  ```
+- **Backup Database**:
+  ```bash
+  sudo -u postgres pg_dump quiz_tung_thien > /var/backups/quiz_tung_thien_$(date +%Y%m%d_%H%M%S).sql
+  ```
 
 ## 13. Không làm
 - Không reset DB production.

@@ -5,7 +5,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
   let quizData = null;
   let timerInterval = null;
-  const TOTAL_DURATION_SECONDS = 10 * 60; // 10 phút = 600 giây
+  const TOTAL_DURATION_SECONDS = 5 * 60; // 5 phút = 300 giây
 
   // DOM Elements
   const candidateNameEl = document.getElementById('candidate-name');
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (candidateNameEl) candidateNameEl.textContent = quizData.fullName || 'Thí sinh';
     if (candidateOrgEl) candidateOrgEl.textContent = `Đơn vị: ${quizData.organization || 'Chưa cập nhật'}`;
 
-    // Khởi động đồng hồ đếm thời gian (10 phút)
+    // Khởi động đồng hồ đếm thời gian (5 phút)
     startTimer(quizData.startedAt);
 
     // Khởi tạo bảng chọn nhanh câu hỏi (Question Grid)
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // 2. Đồng hồ đếm thời gian thực (10 phút = 600 giây)
+  // 2. Đồng hồ đếm thời gian thực (5 phút = 300 giây)
   function startTimer(startedAt) {
     if (timerInterval) clearInterval(timerInterval);
 
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Tự động nộp bài khi hết giờ
       if (remainingSeconds <= 0) {
         clearInterval(timerInterval);
-        alert('Đã hết 10 phút làm bài thi! Hệ thống sẽ tự động nộp bài.');
+        alert('Đã hết 5 phút làm bài thi! Hệ thống sẽ tự động nộp bài.');
         executeSubmit();
       }
     }

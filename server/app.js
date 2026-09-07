@@ -8,6 +8,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const isProd = process.env.NODE_ENV === 'production';
 
+// Enable trust proxy (Nginx reverse proxy on VPS) so req.ip and rate-limit see real client IPs
+app.set('trust proxy', 1);
+
 // Disable x-powered-by header
 app.disable('x-powered-by');
 

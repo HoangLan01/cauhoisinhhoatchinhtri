@@ -9,27 +9,27 @@ function skipIfLoadTest(req) {
 
 /**
  * Rate limiter cho API bắt đầu làm bài thi (/api/start)
- * Giới hạn: tối đa 15 lượt tạo bài / phút / IP để chống spam bot
+ * Thiết kế cho hội trường: hỗ trợ hàng trăm thí sinh bấm vào thi cùng lúc trên cùng 1 mạng Wi-Fi (chung IP NAT)
  */
 const startLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 phút
-  max: 15,
+  max: 2000, // Tối đa 2.000 lượt tạo bài / phút / IP
   standardHeaders: true,
   legacyHeaders: false,
   skip: skipIfLoadTest,
   message: {
-    error: 'Bạn đang thao tác quá nhanh. Vui lòng chờ 1 phút trước khi bắt đầu lại.',
+    error: 'Hệ thống đang tiếp nhận nhiều lượt truy cập cùng lúc. Vui lòng thử lại sau vài giây.',
     code: 'RATE_LIMIT_START'
   }
 });
 
 /**
  * Rate limiter cho API cập nhật tiến độ chọn câu (/api/progress)
- * Giới hạn: tối đa 120 request / phút / IP
+ * Hỗ trợ 200+ thí sinh cùng chọn đáp án liên tục phục vụ bảng Đua Top máy chiếu
  */
 const progressLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 phút
-  max: 120,
+  max: 10000, // Tối đa 10.000 request / phút / IP
   standardHeaders: true,
   legacyHeaders: false,
   skip: skipIfLoadTest,
@@ -41,27 +41,27 @@ const progressLimiter = rateLimit({
 
 /**
  * Rate limiter cho API nộp bài thi (/api/submit)
- * Giới hạn: tối đa 10 lượt submit / phút / IP
+ * Hỗ trợ toàn bộ hội trường nộp bài đồng thời khi hết giờ hoặc hoàn thành bài thi
  */
 const submitLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 phút
-  max: 10,
+  max: 2000, // Tối đa 2.000 lượt submit / phút / IP
   standardHeaders: true,
   legacyHeaders: false,
   skip: skipIfLoadTest,
   message: {
-    error: 'Bạn đang gửi yêu cầu nộp bài quá nhanh. Vui lòng đợi trong giây lát.',
+    error: 'Hệ thống đang xử lý nhiều lượt nộp bài cùng lúc. Vui lòng bấm nộp lại sau vài giây.',
     code: 'RATE_LIMIT_SUBMIT'
   }
 });
 
 /**
  * Rate limiter cho API theo dõi màn hình Live (/api/live)
- * Giới hạn: tối đa 120 request / phút / IP (đáp ứng chu kỳ polling 2s = 30 req/phút của hội trường)
+ * Hỗ trợ nhiều màn hình / thiết bị cùng theo dõi thời gian thực
  */
 const liveLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 phút
-  max: 120,
+  max: 1000, // Tối đa 1.000 request / phút / IP
   standardHeaders: true,
   legacyHeaders: false,
   skip: skipIfLoadTest,
